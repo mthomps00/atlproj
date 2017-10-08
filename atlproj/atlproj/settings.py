@@ -25,7 +25,9 @@ SECRET_KEY = 'fh@76_ix+w0z$a8q51$fxr%r+w%(m7w4=o)t%&!y6%280#bvgu'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'atlproj-mthomps.c9users.io',
+]
 
 
 # Application definition
@@ -75,8 +77,15 @@ WSGI_APPLICATION = 'atlproj.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'c9',
+        'USER': 'mthomps',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 
