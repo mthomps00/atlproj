@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<!-- BOOTSTRAP CDN INCLUDE -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<!-- /BOOTSTRAP -->
+	
+	<title>{% block title %}Home{% endblock %}</title>
+</head>
+
+<body id="home">
+
+	<div class="container">
+		
+		<div class="row">
+			<div class="col">
+
+				{% block nav %}
+				<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+					<a class="navbar-brand" href="#">Atlantic Projects</a>
+					<div id="navbarNav">
+						<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+						{% block subnav %}
+							<li class="nav-item nav-link{% block ideas-nav %}{% endblock %}">
+								<a class="nav-link" href="{% url 'idea_list' %}">Ideas</a>
+							</li>
+							<li class="nav-item nav-link{% block calendar-nav %}{% endblock %}">
+								<a class="nav-link" href="{% url 'calendar' %}">Calendar</a>
+							</li>
+							<li class="nav-item nav-link{% block clients-nav %}{% endblock %}">
+								<a class="nav-link" href="#">Budget</a>
+							</li>
+						{% endblock %}
+						</ul>
+					</div>
+				</nav>
+				{% endblock %}
+				
+			</div>
+		</div>
+		
+		
+		<div class="row">
+			<div class="col">
+				
+				{% block content %}
+				<h3>Recently added ideas</h3>
+				
+				{% if ideas_list %}
+				    <table class="table mt-3">
+				    	<thead>
+				    		<tr>
+				    			<th>Internal title</th>
+				    			<th>Date added</th>
+				    			<th class="w-50">Description</th>
+				    		</tr>
+				    	</thead>
+				    	<tbody>
+				        {% for idea in ideas_list %}
+				        	<tr>
+				        		<td><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a></td>
+				        		<td>{{ idea.date_submitted }}</td>
+				        		<td>{{ idea.description }}</td>
+				        	</tr>
+				        {% endfor %}
+				        </tbody>
+				    </table>
+				{% else %}
+				    <p>No ideas fit this description.</p>
+				{% endif %}
+				
+				{% endblock %}
+				
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

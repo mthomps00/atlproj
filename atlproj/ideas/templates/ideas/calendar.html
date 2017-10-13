@@ -1,0 +1,24 @@
+{% extends "ideas/index.html" %}
+
+    {% block content %}
+	<h3>Upcoming initiatives</h3>
+	
+	{% if object_list %}
+
+		{% regroup object_list by start_date|date:"F" as calendar_list %}
+	    
+	    	{% for month in calendar_list %}
+	    		<h5>{{ month.grouper }}</h5>
+	    		
+	    		<ul>
+	    		{% for item in month.list %}
+    				<li>{{ item.start_date|date:"j" }} - <strong><a href="{% url 'idea_detail' item.id %}">{{ item.short_title }}</a></strong> ({{ item.platform }})<br />{{ item.description }}</li>
+	    		{% endfor %}
+	    		</ul>
+	    	{% endfor %}
+
+	{% else %}
+	    <p>No ideas fit this description.</p>
+	{% endif %}
+	
+	{% endblock %}

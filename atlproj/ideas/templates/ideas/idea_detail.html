@@ -1,0 +1,84 @@
+{% extends "ideas/index.html" %}
+
+{% load ideas_extras %}
+
+    {% block title %}{{ object.short_title }}{% endblock %}
+    
+    {% block content %}
+	{% if object %}
+	<h1 class="display-4">{{ object.short_title }}</h3>
+	
+	{% if object.description %}<p class="lead">{{ object.description }}</p>{% endif %}
+	
+	{% if idea.date_submitted %}
+	<p><strong>Date submitted:</strong> {{ idea.date_submitted|date:"F j, Y" }}</p>
+	{% endif %}
+	{% if idea.marketing_title %}
+	<p><strong>Marketing title:</strong> {{ idea.marketing_title }}</p>
+	{% endif %}
+	{% if idea.editorial_title %}
+	<p><strong>Editorial title:</strong> {{ idea.editorial_title }}</p>
+	{% endif %}
+	{% if idea.status %}
+	<p><strong>Status:</strong> {{ idea.get_status_display }}</p>
+	{% endif %}
+	{% if idea.notes %}
+	<p><strong>Notes:</strong> {{ idea.notes }}</p>
+	{% endif %}
+	
+	{% if idea.idea_set.all %}
+	<hr />
+	
+	<h3>Cross-Platform Components</h3>
+	
+		{% for child in idea.idea_set.all %}
+		<div class="card mt-3 mb-3">
+		<div class="card-header">
+			<h5>{{ child.short_title }}</h5>
+		</div>
+		<div class="card-body">
+			<p>{{ child.description }}</p>
+			<ul>
+				{% if child.date_submitted %}
+				<li><strong>Date submitted:</strong> {{ child.date_submitted|date:"F j, Y" }}</li>
+				{% endif %}
+				{% if child.marketing_title %}
+				<li><strong>Marketing title:</strong> {{ child.marketing_title }}</li>
+				{% endif %}
+				{% if child.editorial_title %}
+				<li><strong>Editorial title:</strong> {{ child.editorial_title }}</li>
+				{% endif %}
+				{% if child.status %}
+				<li><strong>Status:</strong> {{ child.get_status_display }}</li>
+				{% endif %}
+				{% if child.notes %}
+				<li><strong>Notes:</strong> {{ child.notes }}</li>
+				{% endif %}
+			</ul>
+		</div>
+		</div>
+		{% endfor %}
+		
+	{% endif %}
+	
+	{% else %}
+	    <p>This is not a valid idea! Try again!</p>
+	{% endif %}
+
+	{% if idea.pitch_set.all %}
+	{% if request.user|has_group:"Sales" %}
+	
+	<hr />
+	<h3>Pitches</h3>
+		<ul>
+		{% for pitch in idea.pitch_set.all %}
+			<li>{{ pitch.client }} ({{ pitch.date_created }})</li>
+		{% endfor %}
+		</ul>
+	</div>
+	
+	{% endif %}
+	{% endif %}
+	
+	
+	{% endblock %}

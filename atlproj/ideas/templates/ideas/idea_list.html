@@ -1,0 +1,29 @@
+{% extends "ideas/index.html" %}
+
+    {% block content %}
+	<h3>Recently added ideas</h3>
+	
+	{% if object_list %}
+	    <table class="table mt-3">
+	    	<thead>
+	    		<tr>
+	    			<th>Internal title</th>
+	    			<th>Date added</th>
+	    			<th class="w-50">Description</th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	        {% for idea in object_list %}
+	        	<tr>
+	        		<td><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a></td>
+	        		<td>{{ idea.date_submitted }}</td>
+	        		<td>{{ idea.description }}</td>
+	        	</tr>
+	        {% endfor %}
+	        </tbody>
+	    </table>
+	{% else %}
+	    <p>No ideas fit this description.</p>
+	{% endif %}
+	
+	{% endblock %}
