@@ -19,13 +19,14 @@ class Idea(models.Model):
     STATUSES = (
         ('ON_OFFER', 'On offer'),
         ('LIVE', 'Live'),
-        ('COMMITTED', 'Success'),
+        ('COMMITTED', 'Committed'),
         ('ARCHIVED', 'Archived'),
         ('COMPLETED', 'Completed'),
     )
     short_title = models.CharField(max_length=255)
     marketing_title = models.CharField(max_length=255, blank=True)
     editorial_title = models.CharField(max_length=255, blank=True)
+    subtitle = models.CharField(max_length=255, blank=True)
     date_submitted = models.DateField('date submitted', default=date.today)
     description = models.TextField(blank=True)
     status = models.CharField(max_length=15, choices=STATUSES, default='ON_OFFER')
@@ -39,7 +40,10 @@ class Idea(models.Model):
     notes = models.TextField(blank=True)
     
     def __str__(self):
-        return self.short_title
+        if self.editorial_title:
+            return self.editorial_title
+        else:
+            return self.short_title
 
 class Pitch(models.Model):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE)

@@ -1,21 +1,44 @@
 {% extends "ideas/index.html" %}
+	
+	{% block calendar-nav %} active{% endblock %}
 
     {% block content %}
-	<h3>Upcoming initiatives</h3>
-	
+
 	{% if object_list %}
 
 		{% regroup object_list by start_date|date:"F" as calendar_list %}
-	    
-	    	{% for month in calendar_list %}
-	    		<h5>{{ month.grouper }}</h5>
-	    		
-	    		<ul>
-	    		{% for item in month.list %}
-    				<li>{{ item.start_date|date:"j" }} - <strong><a href="{% url 'idea_detail' item.id %}">{{ item.short_title }}</a></strong> ({{ item.platform }})<br />{{ item.description }}</li>
-	    		{% endfor %}
-	    		</ul>
-	    	{% endfor %}
+	    	
+	    	<h1 class="display-4">Upcoming</h1>
+	    	{% if platform %}
+	    	<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="{% url 'calendar' %}">All</a></li>
+				<li class="breadcrumb-item active">{{ platform.title }}</li>
+			</ol>
+			{% endif %}
+	    	
+			{% for month in calendar_list %}
+
+			<h4 class="mt-3 mb-3">{{ month.grouper }}</h4>
+			<table class="table">
+				<tbody>
+					{% for item in month.list %}
+					<tr>
+						<th scope="row">{{ item.start_date|date:"j" }}</th>
+						<td class="w-33"><strong><a href="{% url 'idea_detail' item.id %}">{{ item }}</a></strong>
+						{% if item.idea_set.all %}
+	    					{% for item in item.idea_set.all%}
+	    						<a href="{% url 'platform_calendar' item.platform.name %}" class="badge badge-info">{{ item.platform.title }}</a> 
+	    					{% endfor %}
+	    				{% elif item.platform %}
+	    					<a href="{% url 'platform_calendar' item.platform.name %}" class="badge badge-info">{{ item.platform.title }}</a>
+						{% endif %}
+  						</td>
+						<td class="w-50">{{ item.description }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endfor %}
 
 	{% else %}
 	    <p>No ideas fit this description.</p>

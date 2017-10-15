@@ -1,7 +1,9 @@
 {% extends "ideas/index.html" %}
 
+	{% block ideas-nav %} active{% endblock %}
+
     {% block content %}
-	<h3>Recently added ideas</h3>
+	<h1 class="display-4">Recently added ideas</h1>
 	
 	{% if object_list %}
 	    <table class="table mt-3">

@@ -2,62 +2,57 @@
 
 {% load ideas_extras %}
 
-    {% block title %}{{ object.short_title }}{% endblock %}
+	{% block ideas-nav %} active{% endblock %}
+    {% block title %}{{ object }}{% endblock %}
     
     {% block content %}
-	{% if object %}
-	<h1 class="display-4">{{ object.short_title }}</h3>
+	{% if idea %}
+	<h1 class="display-4">{{ idea }}</h1>
 	
-	{% if object.description %}<p class="lead">{{ object.description }}</p>{% endif %}
+	<h4>{% if idea.platform %}<span class="badge badge-info">{{ idea.platform.title }}</span>{% endif %} {% if idea.parent %}Part of <a href="{% url 'idea_detail' idea.parent.id %}">{{ idea.parent }}</a>{% endif %}</h4>
 	
+	{% if idea.description %}<p class="lead">{{ idea.description }}</p>{% endif %}
+	
+	<ul>
 	{% if idea.date_submitted %}
-	<p><strong>Date submitted:</strong> {{ idea.date_submitted|date:"F j, Y" }}</p>
+	<li><strong>Date submitted:</strong> {{ idea.date_submitted|date:"F j, Y" }}</li>
 	{% endif %}
 	{% if idea.marketing_title %}
-	<p><strong>Marketing title:</strong> {{ idea.marketing_title }}</p>
-	{% endif %}
-	{% if idea.editorial_title %}
-	<p><strong>Editorial title:</strong> {{ idea.editorial_title }}</p>
+	<li><strong>Marketing title:</strong> {{ idea.marketing_title }}</li>
 	{% endif %}
 	{% if idea.status %}
-	<p><strong>Status:</strong> {{ idea.get_status_display }}</p>
+	<li><strong>Status:</strong> {{ idea.get_status_display }}</li>
 	{% endif %}
 	{% if idea.notes %}
-	<p><strong>Notes:</strong> {{ idea.notes }}</p>
+	<li><strong>Notes:</strong> {{ idea.notes }}</li>
 	{% endif %}
+	</ul>
 	
 	{% if idea.idea_set.all %}
 	<hr />
 	
-	<h3>Cross-Platform Components</h3>
+	<h3>Components</h3>
 	
+	    <table class="table mt-3">
+	    	<thead>
+	    		<tr>
+	    			<th>Title</th>
+	    			<th>Date added</th>
+	    			<th>Status</th>
+	    			<th class="w-50">Description</th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
 		{% for child in idea.idea_set.all %}
-		<div class="card mt-3 mb-3">
-		<div class="card-header">
-			<h5>{{ child.short_title }}</h5>
-		</div>
-		<div class="card-body">
-			<p>{{ child.description }}</p>
-			<ul>
-				{% if child.date_submitted %}
-				<li><strong>Date submitted:</strong> {{ child.date_submitted|date:"F j, Y" }}</li>
-				{% endif %}
-				{% if child.marketing_title %}
-				<li><strong>Marketing title:</strong> {{ child.marketing_title }}</li>
-				{% endif %}
-				{% if child.editorial_title %}
-				<li><strong>Editorial title:</strong> {{ child.editorial_title }}</li>
-				{% endif %}
-				{% if child.status %}
-				<li><strong>Status:</strong> {{ child.get_status_display }}</li>
-				{% endif %}
-				{% if child.notes %}
-				<li><strong>Notes:</strong> {{ child.notes }}</li>
-				{% endif %}
-			</ul>
-		</div>
-		</div>
+	        	<tr>
+	        		<td><a href="{% url 'idea_detail' child.pk %}">{{ child }}{% if child.marketing_title %} (Marketing title: {{ child.marketing_title }}){% endif %}</child></a></td>
+	        		<td>{{ child.date_submitted|date:"F j, Y" }}</td>
+	        		<td>{% if child.status %}{{ child.get_status_display }}{% endif %}</td>
+	        		<td class="w-50">{% if child.platform %}<span class="badge badge-info">{{ child.platform.title }}</span> {% endif %}{{ child.description }}</td>
+	        	</tr>
 		{% endfor %}
+			</tbody>
+		</table>
 		
 	{% endif %}
 	
@@ -65,17 +60,35 @@
 	    <p>This is not a valid idea! Try again!</p>
 	{% endif %}
 
-	{% if idea.pitch_set.all %}
 	{% if request.user|has_group:"Sales" %}
-	
 	<hr />
 	<h3>Pitches</h3>
-		<ul>
+	
+	<a href="{% url 'admin:ideas_pitch_add' %}" class="btn btn-primary btn-sm">Add new pitch</a>
+
+	{% if idea.pitch_set.all %}
+    <table class="table mt-3">
+    	<thead>
+    		<tr>
+    			<th>Client</th>
+    			<th>Updated</th>
+    			<th>Status</th>
+    			<th>Edit</th>
+    			<th class="w-50">Notes</th>
+    		</tr>
+    	</thead>
+    	<tbody>
 		{% for pitch in idea.pitch_set.all %}
-			<li>{{ pitch.client }} ({{ pitch.date_created }})</li>
+			<tr>
+				<td>{{ pitch.client }}</td>
+				<td>{{ pitch.date_updated }}</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
 		{% endfor %}
-		</ul>
-	</div>
+		</tbody>
+	</table>
 	
 	{% endif %}
 	{% endif %}
