@@ -28,8 +28,10 @@ class Idea(models.Model):
     editorial_title = models.CharField(max_length=255, blank=True)
     subtitle = models.CharField(max_length=255, blank=True)
     date_submitted = models.DateField('date submitted', default=date.today)
+    date_updated = models.DateField('last updated', auto_now=True)
     description = models.TextField(blank=True)
     status = models.CharField(max_length=15, choices=STATUSES, default='ON_OFFER')
+    deliverables = models.CharField(max_length=255, blank=True)
     start_date = models.DateField('start date', null=True, blank=True)
     end_date = models.DateField('end date', null=True, blank=True)
     length = models.PositiveSmallIntegerField(null=True, blank=True, help_text="How many weeks would this last?")
@@ -49,7 +51,7 @@ class Pitch(models.Model):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_created = models.DateField('date created', default=date.today)
-    date_updated = models.DateField('date updated', auto_now=True)
+    date_updated = models.DateField('last updated', auto_now=True)
 
     def __str__(self):
         name = "%s: %s" % (self.idea, self.client)
