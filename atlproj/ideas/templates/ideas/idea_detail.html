@@ -7,7 +7,7 @@
     
     {% block content %}
 	{% if idea %}
-	<h1 class="display-4">{{ idea }}</h1>
+	<h1 class="display-4">{{ idea }} {% if request.user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>{% endif %}</h1>
 	
 	<h4>{% if idea.platform %}<span class="badge badge-info">{{ idea.platform.title }}</span>{% endif %} {% if idea.parent %}Part of <a href="{% url 'idea_detail' idea.parent.id %}">{{ idea.parent }}</a>{% endif %}</h4>
 	
@@ -61,13 +61,12 @@
 	{% endif %}
 
 	{% if request.user|has_group:"Sales" %}
+	{% if idea.pitch_set.all %}
+    
 	<hr />
 	<h3>Pitches</h3>
 	
-	<a href="{% url 'admin:ideas_pitch_add' %}" class="btn btn-primary btn-sm">Add new pitch</a>
-
-	{% if idea.pitch_set.all %}
-    <table class="table mt-3">
+	<table class="table mt-3">
     	<thead>
     		<tr>
     			<th>Client</th>
