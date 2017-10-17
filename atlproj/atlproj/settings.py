@@ -29,7 +29,6 @@ ALLOWED_HOSTS = [
     'atlproj-mthomps.c9users.io',
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,6 +53,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'atlproj.urls'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'c9',
+        'USER': 'mthomps',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
+    }
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -75,20 +88,6 @@ WSGI_APPLICATION = 'atlproj.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'c9',
-        'USER': 'mthomps',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
-    }
-}
 
 
 # Password validation
@@ -130,6 +129,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 try:
-    from local_settings import *
+    from .local_settings import *
 except ImportError:
     pass
