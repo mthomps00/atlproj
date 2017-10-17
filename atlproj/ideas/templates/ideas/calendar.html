@@ -27,10 +27,10 @@
 						<td class="w-33"><strong><a href="{% url 'idea_detail' item.id %}">{{ item }}</a></strong>
 						{% if item.idea_set.all %}
 	    					{% for item in item.idea_set.all%}
-	    						<a href="#" class="badge badge-info">{{ item.platform.title }}</a> 
+	    						<a href="{% if item.platform.name %}{% url 'platform_calendar' item.platform.name %}{% else %}#{% endif %}" class="badge badge-info">{{ item.platform.title }}</a>
 	    					{% endfor %}
 	    				{% elif item.platform %}
-	    					<a href="#" class="badge badge-info">{{ item.platform.title }}</a>
+	    					<a href="{% url 'platform_calendar' item.platform.name %}" class="badge badge-info">{{ item.platform.title }}</a>
 						{% endif %}
   						</td>
 						<td class="w-50">{{ item.description }}</td>
