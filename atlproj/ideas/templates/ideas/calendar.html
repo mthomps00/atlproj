@@ -23,7 +23,7 @@
 				<tbody>
 					{% for item in month.list %}
 					<tr>
-						<th scope="row">{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">{% endif %}{{ item.start_date|date:"j" }}{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}?</span>{% endif %}</th>
+						<th scope="row">{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</th>
 						<td class="w-33"><strong><a href="{% url 'idea_detail' item.id %}">{{ item }}</a></strong>
 						{% if item.idea_set.all %}
 	    					{% for item in item.idea_set.all%}
