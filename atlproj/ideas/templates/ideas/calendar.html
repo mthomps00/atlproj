@@ -24,7 +24,7 @@
 					{% for item in month.list %}
 					<tr>
 						<th scope="row">{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</th>
-						<td class="w-33"><strong><a href="{% url 'idea_detail' item.id %}">{{ item }}</a></strong>
+						<td class="w-33"><strong><a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a></strong>
 						{% if item.idea_set.all %}
 	    					{% for item in item.idea_set.all%}
 	    						<a href="{% if item.platform.name %}{% url 'platform_calendar' item.platform.name %}{% else %}#{% endif %}" class="badge badge-info">{{ item.platform.title }}</a>

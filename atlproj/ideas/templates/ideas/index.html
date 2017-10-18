@@ -96,7 +96,7 @@
 					<li><strong>{{ month.grouper }}</strong>
 						<ul>
 						{% for item in month.list %}
-							<li><strong>{{ item.start_date|date:"j" }}</strong> - <a href="{% url 'idea_detail' item.id %}">{{ item }}</a> {% if item.platform %}<small><span class="badge badge-pill badge-info">{{ item.platform.title }}</span></small>{% endif %}</li>
+							<li><strong>{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</strong> - <a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a> {% if item.platform %}<small><span class="badge badge-pill badge-info">{{ item.platform.title }}</span></small>{% endif %}</li>
 						{% endfor %}
 						</ul>
 					</li>
