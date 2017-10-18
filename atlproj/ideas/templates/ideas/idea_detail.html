@@ -1,6 +1,7 @@
 {% extends "ideas/index.html" %}
 
 {% load ideas_extras %}
+{% load humanize %}
 
 	{% block ideas-nav %} active{% endblock %}
     {% block title %}{{ object }}{% endblock %}
@@ -13,20 +14,40 @@
 	
 	{% if idea.description %}<p class="lead">{{ idea.description }}</p>{% endif %}
 	
-	<ul>
+	<dl class="row">
 	{% if idea.date_submitted %}
-	<li><strong>Date submitted:</strong> {{ idea.date_submitted|date:"F j, Y" }}</li>
+	<dt class="text-right col-sm-3">Added:</dt>
+	<dd class="col-sm-9">{{ idea.date_submitted|date:"F j, Y" }} {% if idea.date_updated %}<span class="text-muted">(Updated: {{ idea.date_updated|date:"F j, Y" }})</span>{% endif %}</dd>
+	{% endif %}
+	{% if idea.start_date %}
+	<dt class="text-right col-sm-3">Timing:</dt>
+	<dd class="col-sm-9">{% if idea.end_date %}{{ idea.start_date|date:"F j" }}-{{ idea.end_date|date:"F j, Y" }}{% else %}{{ idea.start_date }}{% endif %} {% if idea.length %}({{ idea.length }} weeks){% endif %}</dd>
+	{% endif %}
+	{% if idea.lead_time %}
+	<dt class="text-right col-sm-3">Lead time:</dt>
+	<dd class="col-sm-9">{{ idea.lead_time }} weeks</dd>
 	{% endif %}
 	{% if idea.marketing_title %}
-	<li><strong>Marketing title:</strong> {{ idea.marketing_title }}</li>
+	<dt class="text-right col-sm-3">Marketing title:</dt>
+	<dd class="col-sm-9">{{ idea.marketing_title }}</dd>
 	{% endif %}
 	{% if idea.status %}
-	<li><strong>Status:</strong> {{ idea.get_status_display }}</li>
+	<dt class="text-right col-sm-3">Status:</dt>
+ 	<dd class="col-sm-9">{{ idea.get_status_display }}</dd>
+	{% endif %}
+	{% if idea.budget %}
+	<dt class="text-right col-sm-3">Budget:</dt>
+	<dd class="col-sm-9">${{ idea.budget|intcomma }}</dd>
+	{% endif %}
+	{% if idea.deliverables %}
+	<dt class="text-right col-sm-3">Deliverables:</dt>
+	<dd class="col-sm-9">{{ idea.deliverables }}</dd>
 	{% endif %}
 	{% if idea.notes %}
-	<li><strong>Notes:</strong> {{ idea.notes }}</li>
+	<dt class="text-right col-sm-3">Notes:</dt>
+	<dd class="col-sm-9">{{ idea.notes }}</dd>
 	{% endif %}
-	</ul>
+	</dl>
 	
 	{% if idea.idea_set.all %}
 	<hr />
