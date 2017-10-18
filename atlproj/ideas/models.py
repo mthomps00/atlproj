@@ -11,6 +11,7 @@ class Client(models.Model):
 class Platform(models.Model):
     name = models.CharField(max_length=255)
     title = models.CharField(max_length=255, blank=True)
+    nickname = models.CharField(max_length=20, blank=True)
     
     def __str__(self):
         return self.name

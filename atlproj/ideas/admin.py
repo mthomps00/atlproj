@@ -20,7 +20,11 @@ class IdeaAdmin(admin.ModelAdmin):
         PitchInline,
     ]
 
+class PlatformAdmin(admin.ModelAdmin):
+    list_display = ('name', 'title', 'nickname')
+    list_editable = ('title', 'nickname')
+
 admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch)
 admin.site.register(Client)
-admin.site.register(Platform)
+admin.site.register(Platform, PlatformAdmin)

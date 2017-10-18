@@ -55,7 +55,7 @@
 				{% if ideas_list %}
 				    <ul>
 				    {% for idea in ideas_list %}
-		    			<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<small><span class="badge badge-pill badge-info">{{ idea.platform.title }}</span></small>{% endif %}
+		    			<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<small><span class="badge badge-pill badge-info">{% if idea.platform.nickname %}{{ idea.platform.nickname }}{% else %}{{ idea.platform }}{% endif %}</span></small>{% endif %}
 		    			<br />
 		    			<small class="text-muted">{{ idea.description }}</small>
 		    			</li>
@@ -74,7 +74,7 @@
 				{% if active_ideas %}
 					<ul>
 					{% for idea in active_ideas %}
-						<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<small><span class="badge badge-pill badge-info">{{ idea.platform.title }}</span></small>{% endif %}
+						<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<small><span class="badge badge-pill badge-info">{% if idea.platform.nickname %}{{ idea.platform.nickname }}{% else %}{{ idea.platform }}{% endif %}</span></small>{% endif %}
 		    			<br />
 		    			<small class="text-muted">{{ idea.description }}</small>
 		    			</li>
@@ -96,7 +96,7 @@
 					<li><strong>{{ month.grouper }}</strong>
 						<ul>
 						{% for item in month.list %}
-							<li><strong>{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</strong> - <a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a> {% if item.platform %}<small><span class="badge badge-pill badge-info">{{ item.platform.title }}</span></small>{% endif %}</li>
+							<li><strong>{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</strong> - <a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a> {% if item.platform %}<small><span class="badge badge-pill badge-info">{% if item.platform.nickname %}{{ item.platform.nickname }}{% else %}{{ item.platform }}{% endif %}</span></small>{% endif %}</li>
 						{% endfor %}
 						</ul>
 					</li>
