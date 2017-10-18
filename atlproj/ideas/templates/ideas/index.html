@@ -96,7 +96,7 @@
 					<li><strong>{{ month.grouper }}</strong>
 						<ul>
 						{% for item in month.list %}
-							<li><strong>{{ item.start_date|date:"j" }}</strong> - <a href="{% url 'idea_detail' item.id %}">{{ item }}</a> {% if idea.platform %}<span class="badge badge-info">{{ idea.platform.title }}</span>{% endif %}</li>
+							<li><strong>{{ item.start_date|date:"j" }}</strong> - <a href="{% url 'idea_detail' item.id %}">{{ item }}</a> {% if item.platform %}<span class="badge badge-info">{{ item.platform.title }}</span>{% endif %}</li>
 						{% endfor %}
 						</ul>
 					</li>
