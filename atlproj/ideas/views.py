@@ -11,18 +11,20 @@ today = datetime.today()
 
 # Create your views here.
 def index(request):
-    ideas_list = Idea.objects.filter(start_date__gte=today).order_by('start_date').filter(parent__isnull=True)
-    active_ideas = Idea.objects.exclude(status='ARCHIVED').exclude(status='COMPLETED').filter(start_date__lte=today).filter(end_date__gte=today)
+    ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)
+    active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('start_date')
+    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date').filter(parent__isnull=True)
     platforms = Platform.objects.all()
     context = {
         'platforms': platforms,
+        'calendar': calendar,
         'active_ideas': active_ideas,
         'ideas_list': ideas_list,
     }
     return render(request, 'ideas/index.html', context)
     
 class IdeaListView(ListView):
-    queryset = Idea.objects.filter(parent__isnull=True)
+    queryset = Idea.objects.filter(parent__isnull=True).filter(status='ON_OFFER').order_by('-date_updated')
     context_object_name = 'object_list'
 
 class IdeaCalendarView(ListView):

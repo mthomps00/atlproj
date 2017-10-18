@@ -3,22 +3,31 @@
 	{% block ideas-nav %} active{% endblock %}
 
     {% block content %}
-	<h1 class="display-4">Recently added ideas</h1>
+	<h1 class="display-4">Recent ideas on offer</h1>
 	
 	{% if object_list %}
 	    <table class="table mt-3">
 	    	<thead>
 	    		<tr>
 	    			<th>Internal title</th>
-	    			<th>Date added</th>
+	    			<th>Date updated</th>
 	    			<th class="w-50">Description</th>
 	    		</tr>
 	    	</thead>
 	    	<tbody>
 	        {% for idea in object_list %}
 	        	<tr>
-	        		<td><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a></td>
-	        		<td>{{ idea.date_submitted }}</td>
+	        		<td><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
+	        		{% if idea.platform %}<span class="badge badge-secondary">{{ idea.platform.title }}</span>{% endif %}
+	        		{% if idea.idea_set.all %}
+	        			<ul>
+	        				{% for child in idea.idea_set.all %}
+	        				<li><small><a href="{% url 'idea_detail' child.id %}">{{ child.short_title }}</a> {% if child.platform %}<span class="badge badge-secondary">{{ child.platform.title }}</span>{% endif %}</small></li>
+	        				{% endfor %}
+	        			</ul>
+	        		{% endif %}
+	        		</td>
+	        		<td>{{ idea.date_updated }}</td>
 	        		<td>{{ idea.description }}</td>
 	        	</tr>
 	        {% endfor %}

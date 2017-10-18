@@ -50,29 +50,60 @@
 			<div class="col">
 				
 				{% block content %}
-				<h1 class="display-4">Recently added ideas</h1>
+				<h3>New ideas on offer</h3>
 				
 				{% if ideas_list %}
-				    <table class="table mt-3">
-				    	<thead>
-				    		<tr>
-				    			<th>Internal title</th>
-				    			<th>Date added</th>
-				    			<th class="w-50">Description</th>
-				    		</tr>
-				    	</thead>
-				    	<tbody>
-				        {% for idea in ideas_list %}
-				        	<tr>
-				        		<td><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a></td>
-				        		<td>{{ idea.date_submitted }}</td>
-				        		<td>{{ idea.description }}</td>
-				        	</tr>
-				        {% endfor %}
-				        </tbody>
-				    </table>
+				    <ul>
+				    {% for idea in ideas_list %}
+		    			<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<span class="badge badge-info">{{ idea.platform.title }}</span>{% endif %}
+		    			<br />
+		    			<small class="text-muted">{{ idea.description }}</small>
+		    			</li>
+			        {% endfor %}
+				    </ul>
 				{% else %}
-				    <p>No ideas fit this description.</p>
+				    <p>We're fresh out of ideas, sorry.</p>
+				{% endif %}
+				
+			</div>
+			
+			<div class="col">
+				
+				<h3>Current projects</h3>
+				
+				{% if active_ideas %}
+					<ul>
+					{% for idea in active_ideas %}
+						<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<span class="badge badge-info">{{ idea.platform.title }}</span>{% endif %}
+		    			<br />
+		    			<small class="text-muted">{{ idea.description }}</small>
+		    			</li>
+			        {% endfor %}
+				    </ul>
+				{% else %}
+				    <p>No projects are currently ongoing.</p>
+				{% endif %}
+			</div>
+				
+			<div class="col">
+				
+				<h3>Coming soon</h3>
+				
+				{% if calendar %}
+				{% regroup calendar by start_date|date:"F" as calendar_list %}
+				<ul>
+				{% for month in calendar_list %}
+					<li><strong>{{ month.grouper }}</strong>
+						<ul>
+						{% for item in month.list %}
+							<li><strong>{{ item.start_date|date:"j" }}</strong> - <a href="{% url 'idea_detail' item.id %}">{{ item }}</a></li>
+						{% endfor %}
+						</ul>
+					</li>
+		        {% endfor %}
+				    </ul>
+				{% else %}
+				    <p>No projects are coming aboard anytime soon.</p>
 				{% endif %}
 				
 				{% endblock %}
