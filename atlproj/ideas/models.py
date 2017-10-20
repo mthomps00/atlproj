@@ -1,5 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 from datetime import date
+from django.dispatch import receiver
 
 # Create your models here.
 class Client(models.Model):
@@ -60,3 +63,16 @@ class Pitch(models.Model):
         
     class Meta:
         verbose_name_plural = "pitches"
+        
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    primary_platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.user.username
+
+    
+@receiver(post_save, sender=User)
+def ensure_profile_exists(sender, **kwargs):
+    if kwargs.get('created', False):
+        Profile.objects.get_or_create(user=kwargs.get('instance'))

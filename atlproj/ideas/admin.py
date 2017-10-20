@@ -1,10 +1,15 @@
 from django.contrib import admin
-from .models import Idea, Client, Pitch, Platform
+from .models import Idea, Client, Pitch, Platform, Profile
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 
 # Register your models here.
 
 class PitchInline(admin.TabularInline):
     model = Pitch
+    
+class ProfileInline(admin.TabularInline):
+    model = Profile
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -24,7 +29,17 @@ class PlatformAdmin(admin.ModelAdmin):
     list_display = ('name', 'title', 'nickname')
     list_editable = ('title', 'nickname')
 
+class UserAdmin(BaseUserAdmin):
+    inlines = [
+        ProfileInline,
+    ]
+
 admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch)
 admin.site.register(Client)
 admin.site.register(Platform, PlatformAdmin)
+admin.site.register(Profile)
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
