@@ -40,6 +40,7 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch)
 admin.site.register(Client)
+admin.site.register(GDoc)
 admin.site.register(Platform, PlatformAdmin)
 
 # Re-register UserAdmin
