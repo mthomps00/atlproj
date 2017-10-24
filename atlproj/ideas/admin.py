@@ -37,6 +37,10 @@ class UserAdmin(BaseUserAdmin):
         ProfileInline,
     ]
 
+class GDocAdmin(admin.ModelAdmin):
+    list_display = ('name', 'url', 'description')
+    list_editable = ('name', 'url', 'description')
+
 admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch)
 admin.site.register(Client)

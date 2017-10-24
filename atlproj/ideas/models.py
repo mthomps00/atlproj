@@ -102,6 +102,10 @@ class GDoc(models.Model):
     def __str__(self):
         return self.name
         
+    class Meta:
+        verbose_name = "Google Doc"
+        verbose_name_plural = "Google Docs"
+        
     
 @receiver(post_save, sender=User)
 def ensure_profile_exists(sender, **kwargs):
