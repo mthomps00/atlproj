@@ -93,6 +93,15 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+class GDoc(models.Model):
+    name = models.CharField(max_length=255)
+    ideas = models.ManyToManyField(Idea, related_name="gdocs", related_query_name="gdoc", blank=True)
+    url = models.URLField()
+    description = models.TextField(blank=True)
+    
+    def __str__(self):
+        return self.name
+        
     
 @receiver(post_save, sender=User)
 def ensure_profile_exists(sender, **kwargs):
