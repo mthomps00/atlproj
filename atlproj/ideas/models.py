@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.dispatch import receiver
 
 # Create your models here.
@@ -45,6 +45,27 @@ class Idea(models.Model):
     platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
     notes = models.TextField(blank=True)
     
+    def get_earliest_start_date(self):
+        "Uses the lead time to determine the earliest start date"
+    
+        if self.status == "COMPLETED" or self.status == "LIVE":
+            earliest_start_date = "This project is already live or completed."
+        elif self.status == "ARCHIVED":
+            earliest_start_date = "This project has been archived. Please consult edit about a status change before pitching."
+        elif self.status == "COMMITTED" or self.status == "ON_OFFER":
+            if self.lead_time:
+                today = datetime.today()
+                lt = timedelta(weeks=self.lead_time)
+                calculated_date = today + lt
+                verbose_calculated_date = calculated_date.strftime("%B %m, %Y")
+                earliest_start_date = "The earliest start date for this project is %s." % verbose_calculated_date
+            else:
+                earliest_start_date = "The lead time for this project has not been defined. Please determine lead time before pitching."
+        else:
+            earliest_start_date = "This project is not yet ready to pitch. Please finalize details before pitching."
+        return earliest_start_date
+
+    
     def __str__(self):
         if self.editorial_title:
             return self.editorial_title
@@ -56,11 +77,12 @@ class Pitch(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_created = models.DateField('date created', default=date.today)
     date_updated = models.DateField('last updated', auto_now=True)
+    sell_by = models.DateField('sell_by', blank=True, null=True)
 
     def __str__(self):
         name = "%s: %s" % (self.idea, self.client)
         return name
-        
+    
     class Meta:
         verbose_name_plural = "pitches"
         
