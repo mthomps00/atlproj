@@ -36,6 +36,9 @@
 							<li class="nav-item{% block admin-nav %}{% endblock %}">
 								<a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
 							</li>
+							<li class="nav-item{% block google-nav %}{% endblock %}">
+								<a class="nav-link" href="{% url "social:begin" "google-oauth2" %}?next={{ request.path }}">Google login</a>
+							</li>
 						{% endblock %}
 						</ul>
 					</div>

@@ -1,8 +1,9 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from . import views
 from ideas.views import IdeaListView, IdeaDetailView, IdeaCalendarView, PlatformCalendarView
 
 urlpatterns = [
+    url('', include('social_django.urls', namespace='social')),
     url(r'^$', views.index, name='index'),
     url(r'^list/$', IdeaListView.as_view(), name='idea_list'),
     url(r'^(?P<pk>[0-9]+)/$', IdeaDetailView.as_view(), name='idea_detail'),

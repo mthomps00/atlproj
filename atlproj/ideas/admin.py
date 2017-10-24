@@ -38,7 +38,6 @@ admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch)
 admin.site.register(Client)
 admin.site.register(Platform, PlatformAdmin)
-admin.site.register(Profile)
 
 # Re-register UserAdmin
 admin.site.unregister(User)
