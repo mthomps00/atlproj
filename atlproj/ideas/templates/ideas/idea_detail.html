@@ -14,7 +14,7 @@
 	
 	{% if idea.description %}<p class="lead">{{ idea.description }}</p>{% endif %}
 	{% if request.user|has_group:"Sales" and idea.status == "ON_OFFER" %}
-		{{ idea.get_earliest_start_date }}
+		<p class="lead"><strong>{{ idea.get_earliest_start_date }}</strong></p>
 	{% endif %}
 	
 	<dl class="row">
