@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Idea, Client, Pitch, Platform, Profile
+from .models import Idea, Client, Pitch, Platform, Profile, GDoc
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
@@ -10,6 +10,9 @@ class PitchInline(admin.TabularInline):
     
 class ProfileInline(admin.TabularInline):
     model = Profile
+
+class GDocInline(admin.TabularInline):
+    model = GDoc.ideas.through
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -22,7 +25,7 @@ class IdeaAdmin(admin.ModelAdmin):
     list_filter = ('platform', 'date_updated', 'status')
     list_editable = ('status', 'marketing_title', 'platform')
     inlines = [
-        PitchInline,
+        PitchInline, GDocInline,
     ]
 
 class PlatformAdmin(admin.ModelAdmin):
