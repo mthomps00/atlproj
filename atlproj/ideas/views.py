@@ -13,7 +13,7 @@ today = datetime.today()
 def index(request):
     ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)
     active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')
-    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date').filter(parent__isnull=True)
+    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date')
     platforms = Platform.objects.all()
     context = {
         'platforms': platforms,
