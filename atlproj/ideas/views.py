@@ -28,7 +28,7 @@ class IdeaListView(ListView):
     context_object_name = 'object_list'
 
 class IdeaCalendarView(ListView):
-    queryset = Idea.objects.filter(start_date__gte=today).order_by('start_date').filter(parent__isnull=True)
+    queryset = Idea.objects.filter(start_date__gte=today).order_by('start_date')
     template_name = 'ideas/calendar.html'
     context_object_name = 'object_list'
 
