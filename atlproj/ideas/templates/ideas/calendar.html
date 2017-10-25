@@ -24,13 +24,11 @@
 					{% for item in month.list %}
 					<tr>
 						<th scope="row">{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</th>
-						<td class="w-33"><strong><a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a></strong>
-						{% if item.idea_set.all %}
-	    					{% for item in item.idea_set.all%}
-	    						{% if item.parent %}<a href="{% url 'idea_detail' item.parent.id %}">{{ item.parent.short_title }}</a>:&nbsp;{% endif %}
-	    						<a href="{% if item.platform.name %}{% url 'platform_calendar' item.platform.name %}{% else %}#{% endif %}" class="badge badge-info">{{ item.platform.title }}</a>
-	    					{% endfor %}
-	    				{% elif item.platform %}
+						<td class="w-33">
+							<strong>
+								{% if item.parent %}<a href="{% url 'idea_detail' item.parent.id %}">{{ item.parent.short_title }}</a>: {% endif %}
+								<a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a></strong>
+						{% if item.platform %}
 	    					<a href="{% url 'platform_calendar' item.platform.name %}" class="badge badge-info">{{ item.platform.title }}</a>
 						{% endif %}
   						</td>
