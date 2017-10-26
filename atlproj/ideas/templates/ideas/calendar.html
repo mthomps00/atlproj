@@ -1,4 +1,5 @@
 {% extends "ideas/index.html" %}
+{% load ideas_extras %}
 	
 	{% block calendar-nav %} active{% endblock %}
 
@@ -25,12 +26,13 @@
 					<tr>
 						<th scope="row">{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</th>
 						<td class="w-33">
+							{% short_platform item %}
 							<strong>
-								{% if item.parent %}<a href="{% url 'idea_detail' item.parent.id %}">{{ item.parent.short_title }}</a>: {% endif %}
-								<a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a></strong>
-						{% if item.platform %}
-	    					<a href="{% url 'platform_calendar' item.platform.name %}" class="badge badge-info">{{ item.platform.title }}</a>
-						{% endif %}
+								<a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a>
+							</strong>
+							{% if item.parent %}
+								<br /><small class="text-uppercase">Part of <a href="{% url 'idea_detail' item.parent.id %}">{{ item.parent.short_title }}</a></small>
+							{% endif %}
   						</td>
 						<td class="w-50">{{ item.description }}</td>
 					</tr>

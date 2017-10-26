@@ -1,4 +1,5 @@
 {% load admin_urls %}
+{% load ideas_extras %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,9 +59,9 @@
 				{% if ideas_list %}
 				    <ul>
 				    {% for idea in ideas_list %}
-		    			<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<small><span class="badge badge-pill badge-info">{% if idea.platform.nickname %}{{ idea.platform.nickname }}{% else %}{{ idea.platform }}{% endif %}</span></small>{% endif %}
+		    			<li>{% short_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
 		    			<br />
-		    			<small class="text-muted">{{ idea.description }}</small>
+		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
 		    			</li>
 			        {% endfor %}
 				    </ul>
@@ -77,9 +78,9 @@
 				{% if active_ideas %}
 					<ul>
 					{% for idea in active_ideas %}
-						<li><a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a> {% if idea.platform %}<small><span class="badge badge-pill badge-info">{% if idea.platform.nickname %}{{ idea.platform.nickname }}{% else %}{{ idea.platform }}{% endif %}</span></small>{% endif %}
+						<li>{% short_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
 		    			<br />
-		    			<small class="text-muted">{{ idea.description }}</small>
+		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
 		    			</li>
 			        {% endfor %}
 				    </ul>
@@ -99,7 +100,7 @@
 					<li><strong>{{ month.grouper }}</strong>
 						<ul>
 						{% for item in month.list %}
-							<li><strong>{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</strong> - {% if item.parent %}<a href="{% url 'idea_detail' item.parent.id %}">{{ item.parent.short_title }}</a>: {% endif %}<a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a> {% if item.platform %}<small><a href="{% url 'platform_calendar' item.platform %}" class="badge badge-pill badge-info">{% if item.platform.nickname %}{{ item.platform.nickname }}{% else %}{{ item.platform }}{% endif %}</a></small>{% endif %}</li>
+							<li><strong>{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</strong> - {% if item.parent %}<a href="{% url 'idea_detail' item.parent.id %}">{{ item.parent.short_title }}</a>: {% endif %}<a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a> </li>
 						{% endfor %}
 						</ul>
 					</li>

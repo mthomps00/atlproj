@@ -73,7 +73,10 @@ DATABASES = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'ideas/templates'),
+            os.path.join(BASE_DIR, 'ideas/templates/ideas'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

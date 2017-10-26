@@ -7,3 +7,9 @@ register = template.Library()
 def has_group(user, group_name):
     group =  Group.objects.get(name=group_name) 
     return group in user.groups.all() 
+    
+@register.inclusion_tag('snippet_shortplatform.html')
+def short_platform(item):
+    platform = item.platform
+    return {'platform': platform}
+    

@@ -1,0 +1,9 @@
+{% if platform %}
+    <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-info">
+        {% if platform.nickname %}
+            {{ platform.nickname }}
+        {% else %}
+            {{ platform }}
+        {% endif %}
+    </a>
+{% endif %}
