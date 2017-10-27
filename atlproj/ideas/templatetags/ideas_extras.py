@@ -13,3 +13,7 @@ def short_platform(item):
     platform = item.platform
     return {'platform': platform}
     
+@register.inclusion_tag('snippet_ideachildren.html')
+def idea_children(idea):
+    children = idea.idea_set.all()
+    return {'children': children}

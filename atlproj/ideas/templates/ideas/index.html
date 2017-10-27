@@ -62,6 +62,7 @@
 		    			<li>{% short_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
 		    			<br />
 		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
+		    			{% idea_children idea %}
 		    			</li>
 			        {% endfor %}
 				    </ul>

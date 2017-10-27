@@ -24,7 +24,7 @@ def index(request):
     return render(request, 'ideas/index.html', context)
     
 class IdeaListView(ListView):
-    queryset = Idea.objects.filter(parent__isnull=True).filter(status='ON_OFFER').order_by('-date_updated')
+    queryset = Idea.objects.filter(parent__isnull=True).filter(status='ON_OFFER').order_by('start_date', '-date_updated')
     context_object_name = 'object_list'
 
 class IdeaCalendarView(ListView):
