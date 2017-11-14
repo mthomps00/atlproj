@@ -7,25 +7,24 @@ from django.contrib.auth.models import User
 
 class PitchInline(admin.TabularInline):
     model = Pitch
+    raw_id_fields = ('client',)
     
 class ProfileInline(admin.TabularInline):
     model = Profile
-
-class GDocInline(admin.TabularInline):
-    model = GDoc.ideas.through
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,  {'fields': ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'date_submitted']}),
         ('Scope', {'fields': ['deliverables', 'budget', 'lead_time', 'length']}),
         ('Status', {'fields': ['status', 'start_date', 'end_date']}),
-        ('Meta', {'fields': ['parent', 'platform', 'notes']}),
+        ('Meta', {'fields': ['parent', 'platform', 'notes', 'gdocs']}),
     ]
     list_display = ('short_title', 'marketing_title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
     list_filter = ('platform', 'date_updated', 'status')
     list_editable = ('status', 'marketing_title', 'platform')
+    raw_id_fields = ('parent',)
     inlines = [
-        PitchInline, GDocInline,
+        PitchInline,
     ]
 
 class PlatformAdmin(admin.ModelAdmin):

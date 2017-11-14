@@ -19,6 +19,18 @@ class Platform(models.Model):
     def __str__(self):
         return self.name
 
+class GDoc(models.Model):
+    name = models.CharField(max_length=255)
+    url = models.URLField()
+    description = models.TextField(blank=True)
+    
+    def __str__(self):
+        return self.name
+        
+    class Meta:
+        verbose_name = "Google Doc"
+        verbose_name_plural = "Google Docs"
+        
 class Idea(models.Model):
     STATUSES = (
         ('ON_OFFER', 'On offer'),
@@ -44,6 +56,7 @@ class Idea(models.Model):
     budget = models.PositiveIntegerField(null=True, blank=True)
     platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
     notes = models.TextField(blank=True)
+    gdocs = models.ManyToManyField(GDoc, related_name="gdocs", related_query_name="gdoc", blank=True)
     
     def get_earliest_start_date(self):
         "Uses the lead time to determine the earliest start date"
@@ -93,20 +106,6 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-class GDoc(models.Model):
-    name = models.CharField(max_length=255)
-    ideas = models.ManyToManyField(Idea, related_name="gdocs", related_query_name="gdoc", blank=True)
-    url = models.URLField()
-    description = models.TextField(blank=True)
-    
-    def __str__(self):
-        return self.name
-        
-    class Meta:
-        verbose_name = "Google Doc"
-        verbose_name_plural = "Google Docs"
-        
-    
 @receiver(post_save, sender=User)
 def ensure_profile_exists(sender, **kwargs):
     if kwargs.get('created', False):
