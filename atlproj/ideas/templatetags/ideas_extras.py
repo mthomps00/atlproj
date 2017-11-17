@@ -9,9 +9,13 @@ def has_group(user, group_name):
     return group in user.groups.all() 
     
 @register.inclusion_tag('snippet_shortplatform.html')
-def short_platform(item):
+def short_platform(item, *args, **kwargs):
     platform = item.platform
-    return {'platform': platform}
+    if kwargs:
+        display = kwargs['display']
+    else:
+        display = 'calendar'
+    return {'platform': platform, 'display': display}
     
 @register.inclusion_tag('snippet_ideachildren.html')
 def idea_children(idea):

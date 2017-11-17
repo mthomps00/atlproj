@@ -6,6 +6,7 @@
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="robots" content="noindex, nofollow">
 	
 	<!-- BOOTSTRAP CDN INCLUDE -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
@@ -59,7 +60,7 @@
 				{% if ideas_list %}
 				    <ul>
 				    {% for idea in ideas_list %}
-		    			<li>{% short_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
+		    			<li>{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
 		    			<br />
 		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
 		    			{% idea_children idea %}
@@ -79,7 +80,7 @@
 				{% if active_ideas %}
 					<ul>
 					{% for idea in active_ideas %}
-						<li>{% short_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
+						<li>{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
 		    			<br />
 		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
 		    			</li>

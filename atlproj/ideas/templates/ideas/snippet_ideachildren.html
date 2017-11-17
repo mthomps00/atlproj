@@ -3,7 +3,7 @@
 {% if children %}
 	<ul>
 		{% for child in children %}
-		<li>{% short_platform child %} <small><a href="{% url 'idea_detail' child.id %}">{{ child.short_title }}</a></small></li>
+		<li>{% short_platform child display="list" %} <small><a href="{% url 'idea_detail' child.id %}">{{ child.short_title }}</a></small></li>
 		{% endfor %}
 	</ul>
 {% endif %}

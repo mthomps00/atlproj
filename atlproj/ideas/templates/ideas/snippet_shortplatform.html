@@ -1,9 +1,13 @@
 {% if platform %}
-    <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-info">
-        {% if platform.nickname %}
+    {% if display == "list" %}
+        <a href="{% url 'platform_idea_list' platform %}" class="badge badge-pill badge-info">
+    {% else %}
+        <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-info">
+    {% endif %}
+    {% if platform.nickname %}
             {{ platform.nickname }}
         {% else %}
             {{ platform }}
-        {% endif %}
+    {% endif %}
     </a>
 {% endif %}

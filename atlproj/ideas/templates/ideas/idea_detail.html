@@ -10,7 +10,7 @@
 	{% if idea %}
 	{% if idea.parent %}<h3 class="text-uppercase initialism"><a href="{% url 'idea_detail' idea.parent.id %}">{{ idea.parent }}</a></h3>{% endif %}
 	<h1 class="display-4">{{ idea }} 
-	{% if request.user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>{% endif %}
+	{% if perms.ideas.can_change %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>{% endif %}
 	</h1>
 	
 	<h4>
