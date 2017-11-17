@@ -78,12 +78,21 @@ class Idea(models.Model):
             earliest_start_date = "This project is not yet ready to pitch. Please finalize details before pitching."
         return earliest_start_date
 
-    
-    def __str__(self):
+    def title(self):
+        title = self.short_title
+        
         if self.editorial_title:
-            return self.editorial_title
-        else:
-            return self.short_title
+            title = self.editorial_title
+        
+        if self.marketing_title:
+            title += " (%s)" % self.marketing_title
+        
+        return title
+            
+    def __str__(self):
+        return self.title()
+    
+
 
 class Pitch(models.Model):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE)

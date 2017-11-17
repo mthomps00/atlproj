@@ -27,7 +27,7 @@
 	    	<tbody>
 	        {% for idea in object_list %}
 	        	<tr>
-	        		<td>{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea.short_title }}</a>
+	        		<td>{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 	        		{% idea_children idea %}
 	        		</td>
 	        		<td>{{ idea.date_updated }}</td>
