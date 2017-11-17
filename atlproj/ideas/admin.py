@@ -21,7 +21,7 @@ class IdeaAdmin(admin.ModelAdmin):
     ]
     list_display = ('short_title', 'marketing_title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
     list_filter = ('platform', 'date_updated', 'status')
-    list_editable = ('status', 'marketing_title', 'platform')
+    list_editable = ('status', 'marketing_title', 'platform', 'start_date', 'end_date')
     raw_id_fields = ('parent',)
     inlines = [
         PitchInline,
