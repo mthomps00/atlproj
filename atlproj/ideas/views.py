@@ -29,7 +29,7 @@ class IdeaListView(ListView):
     context_object_name = 'object_list'
     
 class CurrentIdeasView(ListView):
-    queryset = Idea.objects.filter(parent__isnull=True).filter(status='LIVE').order_by('start_date', '-date_updated')
+    queryset = Idea.objects.filter(parent__isnull=True).filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')
     context_object_name = 'object_list'
 
     def get_context_data(self, **kwargs):
@@ -78,7 +78,7 @@ class PlatformCurrentView(ListView):
     
     def get_queryset(self):
         self.platform = get_object_or_404(Platform, name=self.kwargs['platform'])
-        return Idea.objects.filter(status='LIVE').order_by('-start_date', '-date_updated').filter(platform=self.platform)
+        return Idea.objects.filter(status='LIVE').exclude(end_date__lte=today).order_by('-start_date', '-date_updated').filter(platform=self.platform)
         
     def get_context_data(self, **kwargs):
         context = super(PlatformCurrentView, self).get_context_data(**kwargs)
