@@ -80,7 +80,7 @@
 				{% if active_ideas %}
 					<ul>
 					{% for idea in active_ideas %}
-						<li>{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
+						<li>{% short_platform idea display="current" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 		    			<br />
 		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
 		    			</li>

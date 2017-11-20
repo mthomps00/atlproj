@@ -1,6 +1,8 @@
 {% if platform %}
     {% if display == "list" %}
         <a href="{% url 'platform_idea_list' platform %}" class="badge badge-pill badge-info">
+    {% elif display == "current" %}
+        <a href="{% url 'platform_current_list' platform %}" class="badge badge-pill badge-info">
     {% else %}
         <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-info">
     {% endif %}

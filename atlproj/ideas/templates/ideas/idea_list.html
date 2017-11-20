@@ -5,11 +5,11 @@
 	{% block ideas-nav %} active{% endblock %}
 
     {% block content %}
-	<h1 class="display-4">Recent ideas on offer</h1>
+	<h1 class="display-4">{% if current %}Currently active projects{% else %}Recent ideas on offer{% endif %}</h1>
 
 	{% if platform %}
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="{% url 'idea_list' %}">All</a></li>
+		<li class="breadcrumb-item"><a href="{% if current %}{% url 'current_list' %}{% else %}{% url 'idea_list' %}{% endif %}">All</a></li>
 		<li class="breadcrumb-item active">{{ platform.title }}</li>
 	</ol>
 	{% endif %}
@@ -19,19 +19,17 @@
 	    	<thead>
 	    		<tr>
 	    			<th>Internal title</th>
-	    			<th>Date updated</th>
-	    			<th>Start date</th>
+	    			<th>Dates</th>
 	    			<th class="w-50">Description</th>
 	    		</tr>
 	    	</thead>
 	    	<tbody>
 	        {% for idea in object_list %}
 	        	<tr>
-	        		<td>{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
+	        		<td>{% if current %}{% short_platform idea display="current" %}{% else %}{% short_platform idea display="list" %}{% endif %}<a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 	        		{% idea_children idea %}
 	        		</td>
-	        		<td>{{ idea.date_updated }}</td>
-	        		<td>{{ idea.start_date }}</td>
+	        		<td>{{ idea.start_date|date:"M. j" }}{% if idea.end_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}</td>
 	        		<td>{{ idea.description }}</td>
 	        	</tr>
 	        {% endfor %}
