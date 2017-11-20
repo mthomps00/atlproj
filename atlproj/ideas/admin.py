@@ -18,6 +18,7 @@ class IdeaAdmin(admin.ModelAdmin):
         ('Scope', {'fields': ['deliverables', 'budget', 'lead_time', 'length']}),
         ('Status', {'fields': ['status', 'start_date', 'end_date']}),
         ('Meta', {'fields': ['parent', 'platform', 'notes', 'gdocs']}),
+        ('Presentation', {'classes': ['collapse',], 'fields': ['design', 'preview_url', 'live_url']}),
     ]
     list_display = ('title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
     list_filter = ('platform', 'date_updated', 'status')
