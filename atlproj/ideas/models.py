@@ -73,6 +73,7 @@ class Idea(models.Model):
     # META: fields with related information on the project
     parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
+    workday_title = models.CharField(max_length=255, blank=True)
     notes = models.TextField(blank=True)
     gdocs = models.ManyToManyField(GDoc, related_name="gdocs", related_query_name="gdoc", blank=True)
     
@@ -109,8 +110,6 @@ class Idea(models.Model):
             
     def __str__(self):
         return self.title()
-    
-
 
 class Pitch(models.Model):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE)

@@ -17,7 +17,7 @@ class IdeaAdmin(admin.ModelAdmin):
         (None,  {'fields': ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'date_submitted']}),
         ('Scope', {'fields': ['deliverables', 'budget', 'lead_time', 'length']}),
         ('Status', {'fields': ['status', 'start_date', 'end_date']}),
-        ('Meta', {'fields': ['parent', 'platform', 'notes', 'gdocs']}),
+        ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'gdocs']}),
         ('Presentation', {'classes': ['collapse',], 'fields': ['design', 'preview_url', 'live_url']}),
     ]
     list_display = ('title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
