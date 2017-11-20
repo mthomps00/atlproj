@@ -29,7 +29,7 @@
 	        		<td>{% if current %}{% short_platform idea display="current" %}{% else %}{% short_platform idea display="list" %}{% endif %}<a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 	        		{% idea_children idea %}
 	        		</td>
-	        		<td>{{ idea.start_date|date:"M. j" }}{% if idea.end_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}</td>
+	        		<td>{{ idea.start_date|date:"M. j" }}{% if idea.end_date and idea.end_date != idea.start_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}</td>
 	        		<td>{{ idea.description }}</td>
 	        	</tr>
 	        {% endfor %}

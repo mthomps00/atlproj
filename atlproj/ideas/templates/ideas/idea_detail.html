@@ -26,11 +26,11 @@
 	<dl class="row">
 	{% if idea.date_submitted %}
 	<dt class="text-right col-sm-3">Added:</dt>
-	<dd class="col-sm-9">{{ idea.date_submitted|date:"F j, Y" }} {% if idea.date_updated %}<span class="text-muted">(Updated: {{ idea.date_updated|date:"F j, Y" }})</span>{% endif %}</dd>
+	<dd class="col-sm-9">{{ idea.date_submitted|date:"M. j, Y" }} {% if idea.date_updated %}<span class="text-muted">(Updated: {{ idea.date_updated|date:"M. j, Y" }})</span>{% endif %}</dd>
 	{% endif %}
 	{% if idea.start_date %}
 	<dt class="text-right col-sm-3">Timing:</dt>
-	<dd class="col-sm-9">{% if idea.start_date %}{{ idea.start_date|date:"F j" }}{% if idea.end_date %}-{{ idea.end_date|date:"F j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}{% endif %} {% if idea.length %}({{ idea.length }} weeks){% endif %}</dd>
+	<dd class="col-sm-9">{% if idea.start_date %}{{ idea.start_date|date:"M. j" }}{% if idea.end_date and idea.start_date != idea.end_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}{% endif %} {% if idea.length %}({{ idea.length }} weeks){% endif %}</dd>
 	{% endif %}
 	{% if idea.lead_time %}
 	<dt class="text-right col-sm-3">Lead time:</dt>
