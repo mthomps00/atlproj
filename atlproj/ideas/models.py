@@ -39,6 +39,13 @@ class Idea(models.Model):
         ('ARCHIVED', 'Archived'),
         ('COMPLETED', 'Completed'),
     )
+    DESIGNS = (
+        ('BASIC', 'Basic'),
+        ('DELUXE', 'Deluxe'),
+        ('CUSTOM', 'Custom'),
+    )
+    
+    # TOP-LEVEL: fields containing high-level metadata about the project
     short_title = models.CharField(max_length=255)
     marketing_title = models.CharField(max_length=255, blank=True)
     editorial_title = models.CharField(max_length=255, blank=True)
@@ -46,14 +53,25 @@ class Idea(models.Model):
     date_submitted = models.DateField('date submitted', default=date.today)
     date_updated = models.DateField('last updated', auto_now=True)
     description = models.TextField(blank=True)
-    status = models.CharField(max_length=15, choices=STATUSES, default='ON_OFFER')
+    
+    # SCOPE: fields about the size of the project and its deliverables
     deliverables = models.CharField(max_length=255, blank=True)
-    start_date = models.DateField('start date', null=True, blank=True)
-    end_date = models.DateField('end date', null=True, blank=True)
     length = models.PositiveSmallIntegerField(null=True, blank=True, help_text="How many weeks would this last?")
     lead_time = models.PositiveSmallIntegerField(null=True, blank=True, help_text="How many weeks of advance notice does this require?")
-    parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     budget = models.PositiveIntegerField(null=True, blank=True)
+
+    # STATUS: fields about where the project stands
+    status = models.CharField(max_length=15, choices=STATUSES, default='ON_OFFER')
+    start_date = models.DateField('start date', null=True, blank=True)
+    end_date = models.DateField('end date', null=True, blank=True)
+    
+    # PRESENTATION: fields about how/where the project will live publicly
+    design = models.CharField(max_length=15, choices=DESIGNS, default='BASIC')
+    preview_url = models.URLField(null=True, blank=True)
+    live_url = models.URLField(null=True, blank=True)
+        
+    # META: fields with related information on the project
+    parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
     notes = models.TextField(blank=True)
     gdocs = models.ManyToManyField(GDoc, related_name="gdocs", related_query_name="gdoc", blank=True)
