@@ -33,7 +33,9 @@ class GDoc(models.Model):
         
 class Idea(models.Model):
     STATUSES = (
+        ('DRAFT', 'Not yet approved'),
         ('ON_OFFER', 'On offer'),
+        ('TENTATIVE', 'Tentative'),
         ('LIVE', 'Live'),
         ('COMMITTED', 'Committed'),
         ('ARCHIVED', 'Archived'),
