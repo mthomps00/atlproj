@@ -7,7 +7,7 @@
 
 	{% if active_ideas %}
 
-	<h3>Ongoing projects:</h3>
+	<h3>Ongoing projects</h3>
 
 		<ul>
 		{% for idea in active_ideas %}
@@ -20,7 +20,7 @@
 	{% endif %}
 	
 	{% if calendar %}
-	<h3>Upcoming projects:</h3>
+	<h3>Upcoming projects</h3>
 
 	{% regroup calendar by start_date|date:"F" as calendar_list %}
 	<ul>
