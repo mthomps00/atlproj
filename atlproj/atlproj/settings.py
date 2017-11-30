@@ -93,7 +93,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'atlproj.wsgi.application'
 
-LOGIN_URL = '/login/google-oauth2/'
+LOGIN_URL = '/ideas/login/google-oauth2/'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_ERROR_URL = 'admin:index'
