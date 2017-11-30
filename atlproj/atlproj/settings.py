@@ -93,8 +93,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'atlproj.wsgi.application'
 
-LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'index'
 LOGIN_ERROR_URL = 'admin:index'
 
 SOCIAL_AUTH_PIPELINE = (
@@ -118,6 +118,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'home'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
