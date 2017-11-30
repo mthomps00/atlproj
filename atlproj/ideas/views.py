@@ -8,10 +8,9 @@ from django.views.generic.dates import YearArchiveView
 from django.views.generic.edit import UpdateView
 from ideas.models import Idea, Client, Pitch, Platform
 
-today = datetime.today()
-
 # Create your views here.
 def index(request):
+    today = datetime.today()
     ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)
     active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')
     calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date')
@@ -29,6 +28,7 @@ class IdeaListView(ListView):
     context_object_name = 'object_list'
     
 class CurrentIdeasView(ListView):
+    today = datetime.today()
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')
     context_object_name = 'object_list'
 
@@ -38,10 +38,12 @@ class CurrentIdeasView(ListView):
         return context
     
 class IdeaRetireView(ListView):
+    today = datetime.today()
     queryset = Idea.objects.filter(status='LIVE').filter(end_date__lte=today).order_by('end_date')
     context_object_name = 'object_list'
 
 class IdeaCalendarView(ListView):
+    today = datetime.today()
     queryset = Idea.objects.filter(start_date__gte=today).order_by('start_date')
     template_name = 'ideas/calendar.html'
     context_object_name = 'object_list'
@@ -51,6 +53,7 @@ class PlatformCalendarView(ListView):
     context_object_name = 'object_list'
     
     def get_queryset(self):
+        today = datetime.today()
         self.platform = get_object_or_404(Platform, name=self.kwargs['platform'])
         return Idea.objects.filter(start_date__gte=today).order_by('start_date').filter(platform=self.platform)
         
@@ -73,6 +76,7 @@ class PlatformListView(ListView):
         return context
 
 class PlatformCurrentView(ListView):
+    today = datetime.today()
     template_name = 'ideas/idea_list.html'
     context_object_name = 'object_list'
     

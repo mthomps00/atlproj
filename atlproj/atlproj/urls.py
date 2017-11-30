@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from ideas.views import IdeaCalendarView
 
 urlpatterns = [
+    url(r'^$', IdeaCalendarView.as_view(), name='home'),
     url(r'^ideas/', include('ideas.urls')),
     url(r'^admin/', admin.site.urls),
 ]
