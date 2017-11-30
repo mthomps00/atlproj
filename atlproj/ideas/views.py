@@ -23,32 +23,42 @@ def index(request):
     }
     return render(request, 'ideas/index.html', context)
     
-class IdeaListView(ListView):
+def home(request):
+    today = datetime.today()
+    active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')
+    calendar = Idea.objects.filter(status='COMMITTED').filter(start_date__gte=today).order_by('start_date')
+    context = {
+        'calendar': calendar,
+        'active_ideas': active_ideas,
+    }
+    return render(request, 'ideas/home.html', context)
+
+class IdeasList(ListView):
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='ON_OFFER').order_by('start_date', '-date_updated')
     context_object_name = 'object_list'
     
-class CurrentIdeasView(ListView):
+class CurrentIdeas(ListView):
     today = datetime.today()
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')
     context_object_name = 'object_list'
 
     def get_context_data(self, **kwargs):
-        context = super(CurrentIdeasView, self).get_context_data(**kwargs)
+        context = super(CurrentIdeas, self).get_context_data(**kwargs)
         context['current'] = True
         return context
     
-class IdeaRetireView(ListView):
+class IdeaRetire(ListView):
     today = datetime.today()
     queryset = Idea.objects.filter(status='LIVE').filter(end_date__lte=today).order_by('end_date')
     context_object_name = 'object_list'
 
-class IdeaCalendarView(ListView):
+class IdeasCalendar(ListView):
     today = datetime.today()
     queryset = Idea.objects.filter(start_date__gte=today).order_by('start_date')
     template_name = 'ideas/calendar.html'
     context_object_name = 'object_list'
 
-class PlatformCalendarView(ListView):
+class PlatformCalendar(ListView):
     template_name = 'ideas/calendar.html'
     context_object_name = 'object_list'
     
@@ -58,11 +68,11 @@ class PlatformCalendarView(ListView):
         return Idea.objects.filter(start_date__gte=today).order_by('start_date').filter(platform=self.platform)
         
     def get_context_data(self, **kwargs):
-        context = super(PlatformCalendarView, self).get_context_data(**kwargs)
+        context = super(PlatformCalendar, self).get_context_data(**kwargs)
         context['platform'] = self.platform
         return context
 
-class PlatformListView(ListView):
+class PlatformIdeasList(ListView):
     template_name = 'ideas/idea_list.html'
     context_object_name = 'object_list'
     
@@ -71,11 +81,11 @@ class PlatformListView(ListView):
         return Idea.objects.filter(status='ON_OFFER').order_by('-start_date', '-date_updated').filter(platform=self.platform)
         
     def get_context_data(self, **kwargs):
-        context = super(PlatformListView, self).get_context_data(**kwargs)
+        context = super(PlatformIdeasList, self).get_context_data(**kwargs)
         context['platform'] = self.platform
         return context
 
-class PlatformCurrentView(ListView):
+class PlatformCurrentIdeas(ListView):
     today = datetime.today()
     template_name = 'ideas/idea_list.html'
     context_object_name = 'object_list'
@@ -85,10 +95,10 @@ class PlatformCurrentView(ListView):
         return Idea.objects.filter(status='LIVE').exclude(end_date__lte=today).order_by('-start_date', '-date_updated').filter(platform=self.platform)
         
     def get_context_data(self, **kwargs):
-        context = super(PlatformCurrentView, self).get_context_data(**kwargs)
+        context = super(PlatformCurrentIdeas, self).get_context_data(**kwargs)
         context['platform'] = self.platform
         context['current'] = True
         return context
 
-class IdeaDetailView(DetailView):
+class IdeaDetail(DetailView):
     model = Idea

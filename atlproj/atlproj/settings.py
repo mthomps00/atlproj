@@ -94,6 +94,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'atlproj.wsgi.application'
 
 LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'home'
 LOGIN_ERROR_URL = 'admin:index'
 
 SOCIAL_AUTH_PIPELINE = (
