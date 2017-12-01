@@ -90,11 +90,11 @@ class PlatformIdeasList(LoginRequiredMixin, ListView):
         return context
 
 class PlatformCurrentIdeas(LoginRequiredMixin, ListView):
-    today = datetime.today()
     template_name = 'ideas/idea_list.html'
     context_object_name = 'object_list'
     
     def get_queryset(self):
+        today = datetime.today()
         self.platform = get_object_or_404(Platform, name=self.kwargs['platform'])
         return Idea.objects.filter(status='LIVE').exclude(end_date__lte=today).order_by('-start_date', '-date_updated').filter(platform=self.platform)
         
