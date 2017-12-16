@@ -120,13 +120,29 @@ class Idea(models.Model):
         
     def __str__(self):
         return self.title()
+    
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('idea_detail', args=[str(self.pk)])
 
 class Pitch(models.Model):
+    PITCH_STATUSES = (
+        ('DRAFT', 'Not yet pitched'),
+        ('POSSIBLE', 'Under consideration'),
+        ('LIKELY', 'Likely to succeed'),
+        ('ALMOST', 'Very likely to succeed'),
+        ('SUCCESS', 'Pitch succeeded'),
+        ('UNLIKELY', 'Long shot'),
+        ('DEAD', 'No go'),
+    )
+
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_created = models.DateField('date created', default=date.today)
     date_updated = models.DateField('last updated', auto_now=True)
     sell_by = models.DateField('sell_by', blank=True, null=True)
+    status = models.CharField(max_length=15, choices=PITCH_STATUSES, default='DRAFT')
+    notes = models.TextField(blank=True)
 
     def __str__(self):
         name = "%s: %s" % (self.idea, self.client)

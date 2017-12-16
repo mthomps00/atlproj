@@ -118,10 +118,10 @@
 	{% endif %}
 
 	{% if request.user|has_group:"Sales" %}
-	{% if idea.pitch_set.all %}
     
 	<hr />
 	<h3>Pitches</h3>
+	{% if idea.pitch_set.all %}
 	<table class="table mt-3">
     	<thead>
     		<tr>
@@ -144,7 +144,9 @@
 		{% endfor %}
 		</tbody>
 	</table>
+	{% else %}
 	
+	<p>This idea has not yet been pitched to an advertiser.</p>
 	{% endif %}
 	{% endif %}
 	

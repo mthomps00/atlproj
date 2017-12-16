@@ -21,12 +21,19 @@ def index(request):
     ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)[:10]
     active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')[:10]
     calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date')[:25]
+    
+    # These three QuerySets are to combine a few types of ideas that need to be updated
+    live_after_end_date = Idea.objects.filter(status='LIVE').filter(end_date__lte=today)
+    not_live_after_start_date = Idea.objects.filter(status='COMMITTED').filter(start_date__lte=today)
+    need_updates = live_after_end_date.union(not_live_after_start_date)
+
     platforms = Platform.objects.all()
     context = {
         'platforms': platforms,
         'calendar': calendar,
         'active_ideas': active_ideas,
         'ideas_list': ideas_list,
+        'need_updates': need_updates,
     }
     return render(request, 'ideas/index.html', context)
     
@@ -66,6 +73,10 @@ class IdeasList(LoginRequiredMixin, ListView):
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='ON_OFFER').order_by('start_date', '-date_updated')
     context_object_name = 'object_list'
     
+class PitchList(LoginRequiredMixin, ListView):
+    model = Pitch
+    context_object_name = 'pitches'
+
 class CurrentIdeas(LoginRequiredMixin, ListView):
     today = datetime.today()
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')

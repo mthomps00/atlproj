@@ -19,24 +19,4 @@
 	    <p>No projects are currently ongoing.</p>
 	{% endif %}
 	
-	{% if calendar %}
-	<h3>Upcoming projects</h3>
-
-	{% regroup calendar by start_date|date:"F" as calendar_list %}
-	<ul>
-	{% for month in calendar_list %}
-		<li><strong>{{ month.grouper }}</strong>
-			<ul>
-			{% for item in month.list %}
-				<li><strong>{{ item.start_date|date:"j" }}</strong> - {% if item.parent %}{{ item.parent.short_title }}: {% endif %}
-				{% if item.live_url %}<a href="{{ item.live_url }}">{% endif %}{{ item }}{% if item.live_url %}</a>{% endif %} </li>
-			{% endfor %}
-			</ul>
-		</li>
-    {% endfor %}
-	    </ul>
-	{% else %}
-	    <p>No projects are coming aboard anytime soon.</p>
-	{% endif %}
-	
 	{% endblock %}

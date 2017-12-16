@@ -25,4 +25,7 @@ urlpatterns = [
         url(r'^$', IdeasCalendar.as_view(), name='calendar'),
         url(r'^calendar/(?P<platform>[\w]+)/$', PlatformCalendar.as_view(), name='platform_calendar'),
         ])),
+    url(r'^pitches/', include([
+        url(r'^$', PitchList.as_view(), name='pitch_list'),
+        ])),
 ]

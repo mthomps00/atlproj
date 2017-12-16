@@ -23,7 +23,7 @@
 	{% endif %}
 
 	{% if object_list %}
-	    <table class="table mt-3">
+	    <table class="table mt-3" id="idea-table">
 	    	<thead>
 	    		<tr>
 	    			<th>Internal title</th>
@@ -47,4 +47,14 @@
 	    <p>No ideas fit this description.</p>
 	{% endif %}
 	
+	{% endblock %}
+	
+	{% block extendfooter %}
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script>
+		$(document).ready( function () {
+			$('#idea-table').DataTable();
+		} );
+	</script>
 	{% endblock %}

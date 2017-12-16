@@ -37,9 +37,9 @@
             {% endblock %}
         {% block userlinks %}
             {% if site_url %}
-                <a href="{{ site_url }}">{% trans 'View site' %}</a> /
+                <a href="{{ site_url }}">{% trans 'Public home page' %}</a> /
             {% endif %}
-            <a href="{% url 'index' %}">Main Index</a> /
+            <a href="{% url 'index' %}">Dashboard</a> /
             <a href="{% url 'idea_list' %}">Ideas</a> / 
         	<a href="{% url 'calendar' %}">Calendar</a> /
             {% if user.is_active and user.is_staff %}
