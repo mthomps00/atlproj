@@ -4,12 +4,8 @@
     {% elif display == "current" %}
         <a href="{% url 'platform_current_list' platform %}" class="badge badge-pill badge-info">
     {% else %}
-        <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-info">
+        <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-info" title="Calendar of ideas for ">
     {% endif %}
-    {% if platform.nickname %}
-            {{ platform.nickname }}
-        {% else %}
-            {{ platform }}
-    {% endif %}
+    {{ platform.nickcheck }}
     </a>
 {% endif %}

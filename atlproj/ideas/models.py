@@ -18,6 +18,14 @@ class Platform(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def nickcheck(self):
+        if self.nickname:
+            nickname = self.nickname
+        else:
+            nickname = self.name
+            
+        return nickname
 
 class GDoc(models.Model):
     name = models.CharField(max_length=255)
@@ -109,7 +117,7 @@ class Idea(models.Model):
             title += " (%s)" % self.marketing_title
         
         return title
-            
+        
     def __str__(self):
         return self.title()
 

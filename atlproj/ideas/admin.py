@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class PitchInline(admin.TabularInline):
     model = Pitch
     raw_id_fields = ('client',)
-    
+
 class ProfileInline(admin.TabularInline):
     model = Profile
 
@@ -23,7 +23,7 @@ class IdeaAdmin(admin.ModelAdmin):
     list_display = ('title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
     list_filter = ('platform', 'date_updated', 'status')
     list_editable = ('status', 'platform', 'start_date', 'end_date')
-    raw_id_fields = ('parent',)
+    raw_id_fields = ('parent', 'gdocs')
     inlines = [
         PitchInline,
     ]

@@ -1,0 +1,22 @@
+{% extends "ideas/index.html" %}
+
+{% load ideas_extras %}
+{% load humanize %}
+
+	{% block ideas-nav %} active{% endblock %}
+    {% block title %}{{ idea }}{% endblock %}
+
+    {% block content %}
+    {% if form %}
+    
+    <form action="{% url 'update_status' idea.id %}" method="post">
+        <div class="form-check form-check-inline">
+            {% csrf_token %}
+            {{ form }}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+    
+    {% endif %}
+    {% endblock %}

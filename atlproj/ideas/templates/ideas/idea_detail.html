@@ -10,7 +10,12 @@
 	{% if idea %}
 	{% if idea.parent %}<h3 class="text-uppercase initialism"><a href="{% url 'idea_detail' idea.parent.id %}">{{ idea.parent }}</a></h3>{% endif %}
 	<h1 class="display-4">{{ idea }} 
-	{% if perms.ideas.can_change %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>{% endif %}
+	{% if perms.ideas.can_change %}
+		<div class="btn-group" role="group" aria-label="Edit idea">
+			<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>
+			<a class="btn btn-primary" href="{% url 'update_status' idea.id %}">Update status</a>
+		</div>
+	{% endif %}
 	</h1>
 	
 	<h4>
@@ -67,6 +72,16 @@
 	{% if idea.notes %}
 	<dt class="text-right col-sm-3">Notes:</dt>
 	<dd class="col-sm-9">{{ idea.notes }}</dd>
+	{% endif %}
+	{% if idea.gdocs.all %}
+	<dt class="text-right col-sm-3">Google Docs:</dt>
+	<dd class="col-sm-9">
+		<ul>
+		{% for doc in idea.gdocs.all %}
+		<li><a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}</li>
+		{% endfor %}
+		</ul>
+	</dd>
 	{% endif %}
 	</dl>
 	

@@ -25,7 +25,7 @@
 
 				{% block nav %}
 				<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-					<a class="navbar-brand" href="{% url 'home' %}">Atlantic Projects</a>
+					<a class="navbar-brand" href="{% if not request.user.is_authenticated %}{% url 'home' %}{% else %}{% url 'index' %}{% endif %}">Atlantic Projects</a>
 					<div id="navbarNav">
 						<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 						{% block subnav %}
@@ -34,8 +34,16 @@
 								<a class="nav-link" href="{% url "social:begin" "google-oauth2" %}?next={% url 'index' %}">Log In</a>
 							</li>
 							{% else %}
-							<li class="nav-item{% block ideas-nav %}{% endblock %}">
-								<a class="nav-link" href="{% url 'index' %}">Ideas</a>
+							<li class="nav-item dropdown{% block ideas-nav %}{% endblock %}">
+								<a class="nav-link dropdown-toggle" href="#" role="button" id="ideas-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ideas</a>
+								<div class="dropdown-menu" aria-labelledby="ideas-menu-link">
+									<a class="dropdown-item" href="{% url 'idea_list' %}">Available</a>
+								    <a class="dropdown-item" href="{% url 'current_list' %}">Now active</a>
+								    <a class="dropdown-item" href="{% url 'complete_list' %}">No longer available</a>
+								</div>
+							</li>
+							<li class="nav-item {% block cal-nav %}{% endblock %}">
+								<a class="nav-link" href="{% url 'calendar' %}">Calendar</a>
 							</li>
 								{% if request.user.is_staff %}
 								<li class="nav-item{% block admin-nav %}{% endblock %}">
@@ -60,7 +68,7 @@
 			<div class="col">
 				
 				{% block content %}
-				<h3>New ideas on offer</h3>
+				<h3>Available</h3>
 				
 				{% if ideas_list %}
 				    <ul>
@@ -72,6 +80,7 @@
 		    			</li>
 			        {% endfor %}
 				    </ul>
+				    {% if ideas_list|length > 10 %}<h6><a href="{% url 'idea_list' %}">See all >></a></h6>{% endif %}
 				{% else %}
 				    <p>We're fresh out of ideas, sorry.</p>
 				{% endif %}
@@ -80,7 +89,7 @@
 			
 			<div class="col">
 				
-				<h3>Current projects</h3>
+				<h3>Now active</h3>
 				
 				{% if active_ideas %}
 					<ul>
@@ -91,6 +100,7 @@
 		    			</li>
 			        {% endfor %}
 				    </ul>
+				    {% if active_ideas|length > 10 %}<h6><a href="{% url 'current_list' %}">See all >></a></h6>{% endif %}
 				{% else %}
 				    <p>No projects are currently ongoing.</p>
 				{% endif %}
@@ -113,6 +123,7 @@
 					</li>
 		        {% endfor %}
 				    </ul>
+				{% if calendar|length > 25 %}<h6><a href="{% url 'calendar' %}">See all >></a></h6>{% endif %}
 				{% else %}
 				    <p>No projects are coming aboard anytime soon.</p>
 				{% endif %}

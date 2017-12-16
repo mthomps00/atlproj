@@ -5,7 +5,15 @@
 	{% block ideas-nav %} active{% endblock %}
 
     {% block content %}
-	<h1 class="display-4">{% if current %}Currently active projects{% else %}Recent ideas on offer{% endif %}</h1>
+	<h1 class="display-4">
+		{% if current %}
+			Now active
+		{% elif complete %}
+			No longer available
+		{% else %}
+			Available
+		{% endif %}
+	</h1>
 
 	{% if platform %}
 	<ol class="breadcrumb">

@@ -9,15 +9,18 @@ from django.views.generic.detail import DetailView
 from django.views.generic.dates import YearArchiveView
 from django.views.generic.edit import UpdateView
 from ideas.models import Idea, Client, Pitch, Platform
+from ideas.forms import IdeaStatus
 
-# Create your views here.
+#################
+# REGULAR VIEWS #
+#################
 
 @login_required
 def index(request):
     today = datetime.today()
-    ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)
-    active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')
-    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date')
+    ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)[:10]
+    active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')[:10]
+    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date')[:25]
     platforms = Platform.objects.all()
     context = {
         'platforms': platforms,
@@ -37,6 +40,28 @@ def home(request):
     }
     return render(request, 'ideas/home.html', context)
 
+def UpdateStatus(request, pk):
+    idea = get_object_or_404(Idea, pk=pk)
+    
+    if request.method == 'POST':
+        form = IdeaStatus(request.POST, instance=idea)
+        if form.is_valid():
+            form.save()
+    else:
+        form = IdeaStatus()
+    
+    context = {
+        'form': form,
+        'idea': idea,
+    }    
+    
+    return render(request, 'ideas/update_status.html', context)
+
+
+#####################
+# CLASS-BASED VIEWS #
+#####################
+
 class IdeasList(LoginRequiredMixin, ListView):
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='ON_OFFER').order_by('start_date', '-date_updated')
     context_object_name = 'object_list'
@@ -49,6 +74,16 @@ class CurrentIdeas(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CurrentIdeas, self).get_context_data(**kwargs)
         context['current'] = True
+        return context
+    
+class CompletedIdeas(LoginRequiredMixin, ListView):
+    today = datetime.today()
+    queryset = Idea.objects.filter(parent__isnull=True).filter(status='COMPLETED').order_by('-end_date')
+    context_object_name = 'object_list'
+
+    def get_context_data(self, **kwargs):
+        context = super(CompletedIdeas, self).get_context_data(**kwargs)
+        context['complete'] = True
         return context
     
 class IdeaRetire(LoginRequiredMixin, ListView):
