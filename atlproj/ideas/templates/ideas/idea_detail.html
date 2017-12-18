@@ -145,7 +145,7 @@
 				<td>{{ pitch.sell_by|date:"M. j, Y" }}</td>
 				<td>{{ pitch.notes }}</td>
 				{% if perms.ideas.change_pitch %}
-					<td><a href="{% url 'admin:ideas_pitch_change' pitch.pk %}" class="btn btn-primary">Edit</a></td>
+					<td><a href="{% url 'admin:ideas_pitch_change' pitch.pk %}" class="btn btn-primary btn-sm">Edit</a></td>
 				{% endif %}
 			</tr>
 		{% endfor %}
