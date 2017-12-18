@@ -13,6 +13,7 @@
 		{% else %}
 			Available
 		{% endif %}
+		{% if perms.ideas.change_idea %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_changelist' %}">Edit all</a>{% endif %}
 	</h1>
 
 	{% if platform %}
@@ -30,6 +31,7 @@
 	    			{% if not platform %}<th>Platform</th>{% endif %}
 	    			<th>Dates</th>
 	    			<th class="w-50">Description</th>
+	    			{% if perms.ideas.change_idea %}<th></th>{% endif %}
 	    		</tr>
 	    	</thead>
 	    	<tbody>
@@ -41,6 +43,7 @@
 	        		{% if not platform %}<td>{% if current %}{% short_platform idea display="current" %}{% else %}{% short_platform idea display="list" %}{% endif %}</td>{% endif %}
 	        		<td>{{ idea.start_date|date:"M. j" }}{% if idea.end_date and idea.end_date != idea.start_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}</td>
 	        		<td>{{ idea.description }}</td>
+	    			{% if perms.ideas.change_idea %}<td><a class="btn btn-primary btn-sm" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a></td>{% endif %}
 	        	</tr>
 	        {% endfor %}
 	        </tbody>

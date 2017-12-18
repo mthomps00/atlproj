@@ -11,6 +11,7 @@
     {% block content %}
 	<h1 class="display-4">
 		Pitches
+		{% if perms.ideas.change_pitch %}<a href="{% url 'admin:ideas_pitch_changelist' %}" class="btn btn-primary">Edit all</a>{% endif %}
 	</h1>
 
 	{% if pitches %}
@@ -23,6 +24,7 @@
 	    			<th>Last Updated</th>
 	    			<th>Sell By</th>
 	    			<th>Notes</th>
+	    			{% if perms.ideas.change_pitch %}<th></th>{% endif %}
 	    		</tr>
 	    	</thead>
 	    	<tbody>
@@ -34,6 +36,7 @@
 	        		<td>{{ pitch.date_updated }}</td>
 	        		<td>{{ pitch.sell_by }}</td>
 	        		<td>{{ pitch.notes }}</td>
+	    			{% if perms.ideas.change_pitch %}<td><a href="{% url 'admin:ideas_pitch_change' pitch.pk %}" class="btn btn-primary btn-sm">Edit</a></td>{% endif %}
 	        	</tr>
 	        {% endfor %}
 	        </tbody>

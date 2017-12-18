@@ -10,14 +10,13 @@
 	{% if idea %}
 	{% if idea.parent %}<h3 class="text-uppercase initialism"><a href="{% url 'idea_detail' idea.parent.id %}">{{ idea.parent }}</a></h3>{% endif %}
 	<h1 class="display-4">{{ idea }} 
-	{% if perms.ideas.can_change %}
+	{% if perms.ideas.change_idea %}
 		<div class="btn-group" role="group" aria-label="Edit idea">
 			<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>
-			<a class="btn btn-primary" href="{% url 'update_status' idea.id %}">Update status</a>
 		</div>
 	{% endif %}
 	</h1>
-	
+
 	<h4>
 	{% if idea.platform %}<span class="badge badge-info">{{ idea.platform.title }}</span>{% endif %}
 	{% if idea.subtitle %}<small class="text-muted">{{ idea.subtitle }}</small>{% endif %}
@@ -117,10 +116,12 @@
 	    <p>This is not a valid idea! Try again!</p>
 	{% endif %}
 
-	{% if request.user|has_group:"Sales" %}
-    
+	{% if request.user|has_group:"Sales" or request.user|has_group:"Marketing" %}    
+	
 	<hr />
-	<h3>Pitches</h3>
+	<h3>Pitches
+	{% if perms.ideas.add_pitch %}<a class="btn btn-primary" href="{% url 'admin:ideas_pitch_add' %}">Add new</a>{% endif %}
+	</h3>
 	{% if idea.pitch_set.all %}
 	<table class="table mt-3">
     	<thead>
@@ -128,8 +129,11 @@
     			<th>Client</th>
     			<th>Updated</th>
     			<th>Status</th>
-    			<th>Edit</th>
-    			<th class="w-50">Notes</th>
+    			<th>Sell&nbsp;by</th>
+    			<th>Notes</th>
+    			{% if perms.ideas.change_pitch %}
+    				<th>Edit</th>
+    			{% endif %}
     		</tr>
     	</thead>
     	<tbody>
@@ -137,9 +141,12 @@
 			<tr>
 				<td>{{ pitch.client }}</td>
 				<td>{{ pitch.date_updated }}</td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td>{{ pitch.get_status_display }}</td>
+				<td>{{ pitch.sell_by|date:"M. j, Y" }}</td>
+				<td>{{ pitch.notes }}</td>
+				{% if perms.ideas.change_pitch %}
+					<td><a href="{% url 'admin:ideas_pitch_change' pitch.pk %}" class="btn btn-primary">Edit</a></td>
+				{% endif %}
 			</tr>
 		{% endfor %}
 		</tbody>
