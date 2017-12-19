@@ -26,6 +26,9 @@
 			<a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
 		</li>
 		<li class="nav-item">
+			<a class="nav-link" id="scope-tab" data-toggle="tab" href="#scope" role="tab" aria-controls="scope" aria-selected="true">Scope</a>
+		</li>
+		<li class="nav-item">
 			<a class="nav-link" id="meta-tab" data-toggle="tab" href="#meta" role="tab" aria-controls="meta" aria-selected="false">Meta</a>
 		</li>
 		<li class="nav-item">
@@ -51,14 +54,25 @@
 			{% endif %}
 			</ul>
 		</div>
-		{% if idea.deliverables or idea.budget %}
 		<div class="tab-pane fade" id="scope" role="tabpanel" aria-labelledby="scope-tab">
 			<ul class="list-unstyled">
-			{% if idea.deliverables %}<li><strong>Deliverables: </strong>{{ idea.deliverables }}</li>{% endif %}
-			{% if idea.budget %}<li><strong>Budget: </strong> {{ idea.budget }}</li>{% endif %}
+			<li><strong>Deliverables: </strong> {{ idea.deliverables }}
+			</li>
+			<li><strong>Budget: </strong> {% if idea.budget %}${{ idea.budget|intcomma }} minimum{% endif %}
+				{% if idea.idea_set.all %}
+				<ul>
+					{% for component in idea.idea_set.all %}
+					<li>
+						{{ component }}: {% if component.budget %}${{ component.budget|intcomma }}{% endif %}
+					</li>
+					{% endfor %}
+					<li><strong>Total with all components:</strong> ${{ idea.calculate_budget|intcomma }}</li>
+				</ul>
+				{% endif %}
+				
+			</li>
 			</ul>
 		</div>
-		{% endif %}
 		<div class="tab-pane fade" id="meta" role="tabpanel" aria-labelledby="meta-tab">
 			<ul class="list-unstyled">
 				<li><strong>Updated:</strong> {{ idea.date_updated|date:"M. j, Y" }}</li>

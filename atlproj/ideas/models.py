@@ -87,6 +87,17 @@ class Idea(models.Model):
     notes = models.TextField(blank=True)
     gdocs = models.ManyToManyField(GDoc, related_name="gdocs", related_query_name="gdoc", blank=True)
     
+    def calculate_budget(self):
+        if self.budget:
+            budget = self.budget
+        else:
+            budget = 0
+        children = self.idea_set.all()
+        for child in children:
+            if child.budget:
+                budget += child.budget
+        return budget
+    
     def get_earliest_start_date(self):
         "Uses the lead time to determine the earliest start date"
     
