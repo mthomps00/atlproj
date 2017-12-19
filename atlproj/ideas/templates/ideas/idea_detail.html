@@ -17,85 +17,114 @@
 	{% endif %}
 	</h1>
 
-	<h4>
-	{% if idea.platform %}<span class="badge badge-info">{{ idea.platform.title }}</span>{% endif %}
-	{% if idea.subtitle %}<small class="text-muted">{{ idea.subtitle }}</small>{% endif %}
+	<h4 class="text-muted mb-3">
+	{{ idea.platform.title }}{% if idea.platform and idea.subtitle %} | {% endif %}{{ idea.subtitle }}
 	</h4>
+		
+	<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="meta-tab" data-toggle="tab" href="#meta" role="tab" aria-controls="meta" aria-selected="false">Meta</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="presentation-tab" data-toggle="tab" href="#presentation" role="tab" aria-controls="presentation" aria-selected="false">Presentation</a>
+		</li>
+		{% if idea.gdocs.all %}
+		<li class="nav-item">
+			<a class="nav-link" id="docs-tab" data-toggle="tab" href="#docs" role="tab" aria-controls="docs" aria-selected="false">Docs</a>
+		</li>
+		{% endif %}
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+			<ul class="list-unstyled">
+			{% if idea.description %}<p class="lead">{{ idea.description }}</li>{% endif %}
+			{% if idea.start_date %}
+				<li><strong>Timing:</strong> {{ idea.start_date|date:"M. j" }}
+				{% if idea.end_date and idea.start_date != idea.end_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %} 
+				{% if idea.length %}({{ idea.length }} weeks)</li>{% endif %}
+			{% endif %}
+			{% if idea.notes %}
+				<li><strong>Notes:</strong> {{ idea.notes }}</li>
+			{% endif %}
+			</ul>
+		</div>
+		{% if idea.deliverables or idea.budget %}
+		<div class="tab-pane fade" id="scope" role="tabpanel" aria-labelledby="scope-tab">
+			<ul class="list-unstyled">
+			{% if idea.deliverables %}<li><strong>Deliverables: </strong>{{ idea.deliverables }}</li>{% endif %}
+			{% if idea.budget %}<li><strong>Budget: </strong> {{ idea.budget }}</li>{% endif %}
+			</ul>
+		</div>
+		{% endif %}
+		<div class="tab-pane fade" id="meta" role="tabpanel" aria-labelledby="meta-tab">
+			<ul class="list-unstyled">
+				<li><strong>Updated:</strong> {{ idea.date_updated|date:"M. j, Y" }}</li>
+				<li><strong>Added to database:</strong> {{ idea.date_submitted|date:"M. j, Y" }}</li>
+				<li><strong>Draft title:</strong> {{ idea.short_title }}</li>
+				{% if idea.lead_time %}<li><strong>Lead time sought:</strong> {{ idea.lead_time }} weeks</li>{% endif %}
+				{% if idea.workday_title %}<li><strong>Workday code:</strong> {{ idea.workday_title }}</li>{% endif %}
+			</ul>
+		</div>
+		{% if idea.design or idea.preview_url %}
+		<div class="tab-pane fade" id="presentation" role="tabpanel" aria-labelledby="presentation-tab">
+			<ul class="list-unstyled">
+				{% if idea.design %}<li><strong>Design: </strong> {{ idea.get_design_display }}</li>{% endif %}
+				{% if idea.preview_url %}<li><strong>Preview URL:</strong> <a href="{{ idea.preview_url }}">{{ idea.preview_url }}</a></li>{% endif %}
+				{% if idea.live_url %}<li><strong>Live URL:</strong> <a href="{{ idea.live_url }}">{{ idea.live_url }}</a></li>{% endif %}
+			</ul>
+		</div>
+		{% endif %}
+		{% if idea.gdocs.all %}
+		<div class="tab-pane fade" id="docs" role="tabpanel" aria-labelledby="docs-tab">
+			{% for doc in idea.gdocs.all %}
+			<a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}<br />
+			{% endfor %}
+		</div>
+		{% endif %}
+	</div>
 	
-	{% if idea.description %}<p class="lead">{{ idea.description }}</p>{% endif %}
-	{% if request.user|has_group:"Sales" and idea.status == "ON_OFFER" %}
-		<p class="lead"><strong>{{ idea.get_earliest_start_date }}</strong></p>
+	{% if idea.status == "COMPLETED" %}
+		<div class="alert alert-secondary">
+	{% elif idea.status == "ARCHIVED" %}
+		<div class="alert alert-danger">
+	{% elif idea.status == "COMMITTED" %}
+		<div class="alert alert-success">
+	{% elif idea.status == "LIVE" %}
+		<div class="alert alert-success">
+	{% elif idea.status == "ON_OFFER" %}
+		<div class="alert alert-primary">
+	{% else %}
+		<div class="alert alert-info">
 	{% endif %}
-	
-	<dl class="row">
-	{% if idea.date_submitted %}
-	<dt class="text-right col-sm-3">Added:</dt>
-	<dd class="col-sm-9">{{ idea.date_submitted|date:"M. j, Y" }} {% if idea.date_updated %}<span class="text-muted">(Updated: {{ idea.date_updated|date:"M. j, Y" }})</span>{% endif %}</dd>
-	{% endif %}
-	{% if idea.start_date %}
-	<dt class="text-right col-sm-3">Timing:</dt>
-	<dd class="col-sm-9">{% if idea.start_date %}{{ idea.start_date|date:"M. j" }}{% if idea.end_date and idea.start_date != idea.end_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}{% endif %} {% if idea.length %}({{ idea.length }} weeks){% endif %}</dd>
-	{% endif %}
-	{% if idea.lead_time %}
-	<dt class="text-right col-sm-3">Lead time:</dt>
-	<dd class="col-sm-9">{{ idea.lead_time }} weeks</dd>
-	{% endif %}
-	{% if idea.status %}
-	<dt class="text-right col-sm-3">Status:</dt>
- 	<dd class="col-sm-9">{{ idea.get_status_display }}</dd>
-	{% endif %}
-	{% if idea.budget %}
-	<dt class="text-right col-sm-3">Budget:</dt>
-	<dd class="col-sm-9">${{ idea.budget|intcomma }}</dd>
-	{% endif %}
-	{% if idea.deliverables %}
-	<dt class="text-right col-sm-3">Deliverables:</dt>
-	<dd class="col-sm-9">{{ idea.deliverables }}</dd>
-	{% endif %}
-	{% if idea.design %}
-	<dt class="text-right col-sm-3">Design:</dt>
-	<dd class="col-sm-9">{{ idea.get_design_display }}</dd>
-	{% endif %}
-	{% if idea.preview_url %}
-	<dt class="text-right col-sm-3">Preview URL:</dt>
-	<dd class="col-sm-9">{{ idea.preview_url }}</dd>
-	{% endif %}
-	{% if idea.live_url %}
-	<dt class="text-right col-sm-3">Live URL:</dt>
-	<dd class="col-sm-9">{{ idea.live_url }}</dd>
-	{% endif %}
-	{% if idea.workday_title %}
-	<dt class="text-right col-sm-3">Workday Title:</dt>
-	<dd class="col-sm-9">{{ idea.workday_title }}</dd>
-	{% endif %}
-	{% if idea.notes %}
-	<dt class="text-right col-sm-3">Notes:</dt>
-	<dd class="col-sm-9">{{ idea.notes }}</dd>
-	{% endif %}
-	{% if idea.gdocs.all %}
-	<dt class="text-right col-sm-3">Google Docs:</dt>
-	<dd class="col-sm-9">
-		<ul>
-		{% for doc in idea.gdocs.all %}
-		<li><a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}</li>
-		{% endfor %}
-		</ul>
-	</dd>
-	{% endif %}
-	</dl>
-	
+			<h3>This project is {{ idea.get_status_display|lower }}.</h3>
+			{% if idea.status == "LIVE" or idea.status == "COMPLETED" %}
+			{% if idea.live_url %}
+			<hr />
+			<a href="{{ idea.live_url }}">View it here.</a>
+			{% endif %}
+			{% elif idea.status == "ON_OFFER" %}
+			<hr />
+			{{ idea.get_earliest_start_date }}
+			{% endif %}
+		</div>
+
 	{% if idea.idea_set.all %}
 	<hr />
 	
 	<h3>Components</h3>
+	<p></p>
 	
-	    <table class="table mt-3">
+	    <table class="table table-sm mt-3">
 	    	<thead>
 	    		<tr>
 	    			<th>Title</th>
 	    			<th>Date added</th>
 	    			<th>Status</th>
-	    			<th class="w-50">Description</th>
+	    			<th>Platform</th>
+	    			<th class="w-50">Description <a class="initialism" data-toggle="collapse" href=".multi-collapse" aria-expanded="false" aria-controls="{% for child in idea.idea_set.all %}{{ child|slugify }} {% endfor %}">[show details]</a></th>
 	    		</tr>
 	    	</thead>
 	    	<tbody>
@@ -104,7 +133,59 @@
 	        		<td><a href="{% url 'idea_detail' child.pk %}">{{ child }}{% if child.marketing_title %} (Marketing title: {{ child.marketing_title }}){% endif %}</child></a></td>
 	        		<td>{{ child.date_submitted|date:"F j, Y" }}</td>
 	        		<td>{% if child.status %}{{ child.get_status_display }}{% endif %}</td>
-	        		<td class="w-50">{% if child.platform %}<span class="badge badge-info">{{ child.platform.title }}</span> {% endif %}{{ child.description }}</td>
+	        		<td>{% if child.platform %}<span class="badge badge-info">{{ child.platform.title }}</span> {% endif %}</td>
+	        		<td class="w-50">{{ child.description }} 
+	        		<div class="collapse multi-collapse" id="{{ child|slugify }}">
+						<dl class="row">
+						{% if child.start_date %}
+						<dt class="text-right col-sm-3">Timing:</dt>
+						<dd class="col-sm-9">{% if child.start_date %}{{ child.start_date|date:"M. j" }}{% if child.end_date and child.start_date != child.end_date %}-{{ child.end_date|date:"M. j, Y" }}{% else %}{{ child.start_date|date:", Y" }}{% endif %}{% endif %} {% if child.length %}({{ child.length }} weeks){% endif %}</dd>
+						{% endif %}
+						{% if child.lead_time %}
+						<dt class="text-right col-sm-3">Lead time:</dt>
+						<dd class="col-sm-9">{{ child.lead_time }} weeks</dd>
+						{% endif %}
+						{% if child.budget %}
+						<dt class="text-right col-sm-3">Budget:</dt>
+						<dd class="col-sm-9">${{ child.budget|intcomma }}</dd>
+						{% endif %}
+						{% if child.deliverables %}
+						<dt class="text-right col-sm-3">Deliverables:</dt>
+						<dd class="col-sm-9">{{ child.deliverables }}</dd>
+						{% endif %}
+						{% if child.design %}
+						<dt class="text-right col-sm-3">Design:</dt>
+						<dd class="col-sm-9">{{ child.get_design_display }}</dd>
+						{% endif %}
+						{% if child.preview_url %}
+						<dt class="text-right col-sm-3">Preview URL:</dt>
+						<dd class="col-sm-9"><a href="{{ child.preview_url }}">{{ child.preview_url }}</a></dd>
+						{% endif %}
+						{% if child.live_url %}
+						<dt class="text-right col-sm-3">Live URL:</dt>
+						<dd class="col-sm-9"><a href="{{ child.live_url }}">{{ child.live_url }}</a></dd>
+						{% endif %}
+						{% if child.workday_title %}
+						<dt class="text-right col-sm-3">Workday Title:</dt>
+						<dd class="col-sm-9">{{ child.workday_title }}</dd>
+						{% endif %}
+						{% if child.notes %}
+						<dt class="text-right col-sm-3">Notes:</dt>
+						<dd class="col-sm-9">{{ child.notes }}</dd>
+						{% endif %}
+						{% if child.gdocs.all %}
+						<dt class="text-right col-sm-3">Google Docs:</dt>
+						<dd class="col-sm-9">
+							<ul>
+							{% for doc in child.gdocs.all %}
+							<li><a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}</li>
+							{% endfor %}
+							</ul>
+						</dd>
+						{% endif %}
+						</dl>
+	        		</div>
+	        		</td>
 	        	</tr>
 		{% endfor %}
 			</tbody>
@@ -156,6 +237,15 @@
 	<p>This idea has not yet been pitched to an advertiser.</p>
 	{% endif %}
 	{% endif %}
+
+	{% endblock %}
 	
-	
+	{% block extendfooter %}
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script>
+		$(document).ready( function () {
+			$('#idea-table').DataTable();
+		} );
+	</script>
 	{% endblock %}
