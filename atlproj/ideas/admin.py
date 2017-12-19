@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Idea, Client, Pitch, Platform, Profile, GDoc
+from .models import Idea, Client, Pitch, Platform, Profile, GDoc, Tag
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
@@ -18,12 +18,12 @@ class IdeaAdmin(admin.ModelAdmin):
         ('Scope', {'fields': ['deliverables', 'budget', 'lead_time', 'length']}),
         ('Status', {'fields': ['status', 'start_date', 'end_date']}),
         ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'gdocs']}),
-        ('Presentation', {'classes': ['collapse',], 'fields': ['design', 'preview_url', 'live_url']}),
+        ('Presentation', {'fields': ['design', 'preview_url', 'live_url', 'slug']}),
     ]
     list_display = ('title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
     list_filter = ('platform', 'date_updated', 'status')
     list_editable = ('status', 'platform', 'start_date', 'end_date')
-    raw_id_fields = ('parent', 'gdocs')
+    raw_id_fields = ('parent', 'gdocs', 'tags')
     search_fields = ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'parent__short_title', 'parent__editorial_title', 'parent__marketing_title']
     inlines = [
         PitchInline,

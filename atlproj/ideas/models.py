@@ -39,6 +39,10 @@ class GDoc(models.Model):
         verbose_name = "Google Doc"
         verbose_name_plural = "Google Docs"
         
+class Tag(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
 class Idea(models.Model):
     STATUSES = (
         ('DRAFT', 'Not yet approved'),
@@ -87,6 +91,7 @@ class Idea(models.Model):
     workday_title = models.CharField(max_length=255, blank=True)
     notes = models.TextField(blank=True)
     gdocs = models.ManyToManyField(GDoc, related_name="gdocs", related_query_name="gdoc", blank=True)
+    tags = models.ManyToManyField(Tag, related_name="tags", related_query_name="tag", blank=True)
     
     def calculate_budget(self):
         if self.budget:
@@ -162,11 +167,6 @@ class Pitch(models.Model):
     
     class Meta:
         verbose_name_plural = "pitches"
-
-class Tag(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    ideas = models.ManyToManyField(Idea, related_name="ideas", related_query_name="idea", blank=True)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
