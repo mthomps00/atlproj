@@ -79,6 +79,7 @@ class Idea(models.Model):
     design = models.CharField(max_length=15, choices=DESIGNS, default='BASIC')
     preview_url = models.URLField(null=True, blank=True)
     live_url = models.URLField(null=True, blank=True)
+    slug = models.CharField(max_length=255, blank=True)
         
     # META: fields with related information on the project
     parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
@@ -161,7 +162,12 @@ class Pitch(models.Model):
     
     class Meta:
         verbose_name_plural = "pitches"
-        
+
+class Tag(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    ideas = models.ManyToManyField(Idea, related_name="ideas", related_query_name="idea", blank=True)
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     primary_platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
