@@ -27,5 +27,6 @@ urlpatterns = [
         ])),
     url(r'^pitches/', include([
         url(r'^$', PitchList.as_view(), name='pitch_list'),
+        url(r'^sold/$', SoldPitches.as_view(), name='sold_pitches'),
         ])),
 ]

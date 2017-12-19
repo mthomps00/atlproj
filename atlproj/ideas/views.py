@@ -77,6 +77,11 @@ class PitchList(LoginRequiredMixin, ListView):
     model = Pitch
     context_object_name = 'pitches'
 
+class SoldPitches(LoginRequiredMixin, ListView):
+    queryset = Pitch.objects.filter(status='SUCCESS').exclude(idea__status='LIVE').exclude(idea__status='COMPLETED')
+    template_name = 'ideas/pitch_list.html'
+    context_object_name = 'pitches'
+
 class CurrentIdeas(LoginRequiredMixin, ListView):
     today = datetime.today()
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')

@@ -44,6 +44,7 @@
 								    <a class="dropdown-item" href="{% url 'complete_list' %}">Archived</a>
 								    {% if request.user|has_group:"Sales" or request.user|has_group:"Marketing" %}
 								    <a class="dropdown-item" href="{% url 'pitch_list' %}">Pitches</a>
+								    <a class="dropdown-item" href="{% url 'sold_pitches' %}">Sold pitches</a>
 								    {% endif %}
 								</div>
 							</li>
