@@ -10,11 +10,14 @@
 
     {% block content %}
 	<h1 class="display-4">
-		Pitches
+		{% if sold %}Sold{% else %}Pitches{% endif %}
 		{% if perms.ideas.change_pitch %}<a href="{% url 'admin:ideas_pitch_changelist' %}" class="btn btn-primary">Edit all</a>{% endif %}
 	</h1>
 
 	{% if pitches %}
+		{% if sold %}
+		<p class="lead"><em>Showing successful pitches for ideas not already marked as "Live" or "Completed."</em></p>
+		{% endif %}
 	    <table class="table mt-3" id="pitch-table">
 	    	<thead>
 	    		<tr>

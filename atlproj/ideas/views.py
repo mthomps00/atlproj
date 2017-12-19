@@ -82,6 +82,11 @@ class SoldPitches(LoginRequiredMixin, ListView):
     template_name = 'ideas/pitch_list.html'
     context_object_name = 'pitches'
 
+    def get_context_data(self, **kwargs):
+        context = super(SoldPitches, self).get_context_data(**kwargs)
+        context['sold'] = True
+        return context
+
 class CurrentIdeas(LoginRequiredMixin, ListView):
     today = datetime.today()
     queryset = Idea.objects.filter(parent__isnull=True).filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')
