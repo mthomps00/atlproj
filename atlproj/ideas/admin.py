@@ -17,13 +17,14 @@ class IdeaAdmin(admin.ModelAdmin):
         (None,  {'fields': ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'date_submitted']}),
         ('Scope', {'fields': ['deliverables', 'budget', 'lead_time', 'length']}),
         ('Status', {'fields': ['status', 'start_date', 'end_date']}),
-        ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'gdocs']}),
+        ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'gdocs', 'tags']}),
         ('Presentation', {'fields': ['design', 'preview_url', 'live_url', 'slug']}),
     ]
     list_display = ('title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
     list_filter = ('platform', 'date_updated', 'status')
     list_editable = ('status', 'platform', 'start_date', 'end_date')
-    raw_id_fields = ('parent', 'gdocs', 'tags')
+    raw_id_fields = ('parent',)
+    filter_horizontal = ('gdocs', 'tags')
     search_fields = ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'parent__short_title', 'parent__editorial_title', 'parent__marketing_title']
     inlines = [
         PitchInline,
@@ -49,6 +50,11 @@ class GDocAdmin(admin.ModelAdmin):
     list_editable = ('url', 'description')
     search_fields = ['name', 'description']
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description')
+    list_editable = ('name', 'description')
+    search_fields = ['name', 'description']
+
 class ClientAdmin(admin.ModelAdmin):
     search_fields = ['name',]
 
@@ -56,6 +62,7 @@ admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch, PitchAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(GDoc, GDocAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Platform, PlatformAdmin)
 
 # Re-register UserAdmin

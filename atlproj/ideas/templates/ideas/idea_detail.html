@@ -8,7 +8,7 @@
     
     {% block content %}
 	{% if idea %}
-	{% if idea.parent %}<h3 class="text-uppercase initialism"><a href="{% url 'idea_detail' idea.parent.id %}">{{ idea.parent }}</a></h3>{% endif %}
+		{% if idea.parent %}<h3 class="text-uppercase initialism"><a href="{% url 'idea_detail' idea.parent.id %}">{{ idea.parent }}</a></h3>{% endif %}
 	<h1 class="display-4">{{ idea }} 
 	{% if perms.ideas.change_idea %}
 		<div class="btn-group" role="group" aria-label="Edit idea">
@@ -25,9 +25,11 @@
 		<li class="nav-item">
 			<a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
 		</li>
+		{% if idea.calculate_budget %}
 		<li class="nav-item">
-			<a class="nav-link" id="scope-tab" data-toggle="tab" href="#scope" role="tab" aria-controls="scope" aria-selected="true">Scope</a>
+			<a class="nav-link" id="budget-tab" data-toggle="tab" href="#budget" role="tab" aria-controls="budget" aria-selected="true">Budget</a>
 		</li>
+		{% endif %}
 		<li class="nav-item">
 			<a class="nav-link" id="meta-tab" data-toggle="tab" href="#meta" role="tab" aria-controls="meta" aria-selected="false">Meta</a>
 		</li>
@@ -52,27 +54,37 @@
 			{% if idea.notes %}
 				<li><strong>Notes:</strong> {{ idea.notes }}</li>
 			{% endif %}
+			{% if idea.deliverables %}<li><strong>Deliverables: </strong> {{ idea.deliverables }}</li>{% endif %}
+			{% if idea.tags.all %}
+				<li><strong>Tags: </strong>
+				{% for tag in idea.tags.all %}
+				<a href="{% url 'tag_detail' tag.pk %}">{{ tag }}</a>{% if not forloop.last %}, {% endif %}
+				{% endfor %}
+				</li>
+			{% endif %}
 			</ul>
 		</div>
-		<div class="tab-pane fade" id="scope" role="tabpanel" aria-labelledby="scope-tab">
+		{% if idea.calculate_budget %}
+		<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
 			<ul class="list-unstyled">
-			<li><strong>Deliverables: </strong> {{ idea.deliverables }}
-			</li>
-			<li><strong>Budget: </strong> {% if idea.budget %}${{ idea.budget|intcomma }} minimum{% endif %}
-				{% if idea.idea_set.all %}
+			<li><strong>Budget: </strong> 
 				<ul>
+				<li>${{ idea.budget|intcomma }} (base)</li>
+				{% if idea.idea_set.all %}
 					{% for component in idea.idea_set.all %}
-					<li>
-						{{ component }}: {% if component.budget %}${{ component.budget|intcomma }}{% endif %}
+					{% if component.budget %}<li>
+						{{ component }}: ${{ component.budget|intcomma }}
 					</li>
+					{% endif %}
 					{% endfor %}
-					<li><strong>Total with all components:</strong> ${{ idea.calculate_budget|intcomma }}</li>
-				</ul>
+					<li><strong>Total:</strong> ${{ idea.calculate_budget|intcomma }}</li>
 				{% endif %}
+				</ul>
 				
 			</li>
 			</ul>
 		</div>
+		{% endif %}
 		<div class="tab-pane fade" id="meta" role="tabpanel" aria-labelledby="meta-tab">
 			<ul class="list-unstyled">
 				<li><strong>Updated:</strong> {{ idea.date_updated|date:"M. j, Y" }}</li>
@@ -93,9 +105,11 @@
 		{% endif %}
 		{% if idea.gdocs.all %}
 		<div class="tab-pane fade" id="docs" role="tabpanel" aria-labelledby="docs-tab">
+			<ul class="list-unstyled">
 			{% for doc in idea.gdocs.all %}
-			<a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}<br />
+				<il></il><a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}<br /></li>
 			{% endfor %}
+			</ul>
 		</div>
 		{% endif %}
 	</div>

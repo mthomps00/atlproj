@@ -43,6 +43,13 @@ class Tag(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
+    def __str__(self):
+        return self.name
+        
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('tag_detail', args=[str(self.pk)])
+
 class Idea(models.Model):
     STATUSES = (
         ('DRAFT', 'Not yet approved'),
@@ -90,8 +97,8 @@ class Idea(models.Model):
     platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
     workday_title = models.CharField(max_length=255, blank=True)
     notes = models.TextField(blank=True)
-    gdocs = models.ManyToManyField(GDoc, related_name="gdocs", related_query_name="gdoc", blank=True)
-    tags = models.ManyToManyField(Tag, related_name="tags", related_query_name="tag", blank=True)
+    gdocs = models.ManyToManyField(GDoc, related_name="ideas", related_query_name="idea", blank=True)
+    tags = models.ManyToManyField(Tag, related_name="ideas", related_query_name="idea", blank=True)
     
     def calculate_budget(self):
         if self.budget:

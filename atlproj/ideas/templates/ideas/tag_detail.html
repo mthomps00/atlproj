@@ -1,0 +1,119 @@
+{% extends "ideas/index.html" %}
+
+{% load ideas_extras %}
+{% load humanize %}
+
+	{% block ideas-nav %} active{% endblock %}
+    {% block title %}{{ object }}{% endblock %}
+    
+    {% block content %}
+	{% if tag %}
+		<h1 class="display-4">{{ tag }} 
+		{% if perms.ideas.change_tag %}
+			<div class="btn-group" role="group" aria-label="Edit tag">
+				<a class="btn btn-primary" href="{% url 'admin:ideas_tag_change' tag.id %}">Edit</a>
+			</div>
+		{% endif %}
+		</h1>
+		
+		{% if tag.description %}
+		<p class="lead">{{ tag.description }}</p>
+		{% endif %}
+
+		{% if tag.ideas.all %}
+		<hr />
+		
+		<h3>Related ideas</h3>
+		<p></p>
+		
+		    <table class="table table-sm mt-3">
+		    	<thead>
+		    		<tr>
+		    			<th>Title</th>
+		    			<th>Date added</th>
+		    			<th>Status</th>
+		    			<th>Platform</th>
+		    			<th class="w-50">Description <a class="initialism" data-toggle="collapse" href=".multi-collapse" aria-expanded="false" aria-controls="{% for child in idea.ideas.all %}{{ child|slugify }} {% endfor %}">[show details]</a></th>
+		    		</tr>
+		    	</thead>
+		    	<tbody>
+			{% for child in tag.ideas.all %}
+		        	<tr>
+		        		<td><a href="{% url 'idea_detail' child.pk %}">{{ child }}{% if child.marketing_title %} (Marketing title: {{ child.marketing_title }}){% endif %}</child></a></td>
+		        		<td>{{ child.date_submitted|date:"F j, Y" }}</td>
+		        		<td>{% if child.status %}{{ child.get_status_display }}{% endif %}</td>
+		        		<td>{% if child.platform %}<span class="badge badge-info">{{ child.platform.title }}</span> {% endif %}</td>
+		        		<td class="w-50">{{ child.description }} 
+		        		<div class="collapse multi-collapse" id="{{ child|slugify }}">
+							<dl class="row">
+							{% if child.start_date %}
+							<dt class="text-right col-sm-3">Timing:</dt>
+							<dd class="col-sm-9">{% if child.start_date %}{{ child.start_date|date:"M. j" }}{% if child.end_date and child.start_date != child.end_date %}-{{ child.end_date|date:"M. j, Y" }}{% else %}{{ child.start_date|date:", Y" }}{% endif %}{% endif %} {% if child.length %}({{ child.length }} weeks){% endif %}</dd>
+							{% endif %}
+							{% if child.lead_time %}
+							<dt class="text-right col-sm-3">Lead time:</dt>
+							<dd class="col-sm-9">{{ child.lead_time }} weeks</dd>
+							{% endif %}
+							{% if child.budget %}
+							<dt class="text-right col-sm-3">Budget:</dt>
+							<dd class="col-sm-9">${{ child.budget|intcomma }}</dd>
+							{% endif %}
+							{% if child.deliverables %}
+							<dt class="text-right col-sm-3">Deliverables:</dt>
+							<dd class="col-sm-9">{{ child.deliverables }}</dd>
+							{% endif %}
+							{% if child.design %}
+							<dt class="text-right col-sm-3">Design:</dt>
+							<dd class="col-sm-9">{{ child.get_design_display }}</dd>
+							{% endif %}
+							{% if child.preview_url %}
+							<dt class="text-right col-sm-3">Preview URL:</dt>
+							<dd class="col-sm-9"><a href="{{ child.preview_url }}">{{ child.preview_url }}</a></dd>
+							{% endif %}
+							{% if child.live_url %}
+							<dt class="text-right col-sm-3">Live URL:</dt>
+							<dd class="col-sm-9"><a href="{{ child.live_url }}">{{ child.live_url }}</a></dd>
+							{% endif %}
+							{% if child.workday_title %}
+							<dt class="text-right col-sm-3">Workday Title:</dt>
+							<dd class="col-sm-9">{{ child.workday_title }}</dd>
+							{% endif %}
+							{% if child.notes %}
+							<dt class="text-right col-sm-3">Notes:</dt>
+							<dd class="col-sm-9">{{ child.notes }}</dd>
+							{% endif %}
+							{% if child.gdocs.all %}
+							<dt class="text-right col-sm-3">Google Docs:</dt>
+							<dd class="col-sm-9">
+								<ul>
+								{% for doc in child.gdocs.all %}
+								<li><a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}</li>
+								{% endfor %}
+								</ul>
+							</dd>
+							{% endif %}
+							</dl>
+		        		</div>
+		        		</td>
+		        	</tr>
+			{% endfor %}
+				</tbody>
+			</table>
+			
+		{% endif %}
+		
+		{% else %}
+		    <p>This is not a valid idea! Try again!</p>
+		{% endif %}
+	
+	{% endblock %}
+	
+	{% block extendfooter %}
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script>
+		$(document).ready( function () {
+			$('#idea-table').DataTable();
+		} );
+	</script>
+	{% endblock %}

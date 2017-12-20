@@ -8,7 +8,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.dates import YearArchiveView
 from django.views.generic.edit import UpdateView
-from ideas.models import Idea, Client, Pitch, Platform
+from ideas.models import Idea, Client, Pitch, Platform, Tag
 from ideas.forms import IdeaStatus
 
 #################
@@ -162,3 +162,6 @@ class PlatformCurrentIdeas(LoginRequiredMixin, ListView):
 
 class IdeaDetail(LoginRequiredMixin, DetailView):
     model = Idea
+    
+class TagDetail(LoginRequiredMixin, DetailView):
+    model = Tag

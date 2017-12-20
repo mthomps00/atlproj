@@ -21,6 +21,9 @@ urlpatterns = [
         url(r'^(?P<pk>[0-9]+)/$', IdeaDetail.as_view(), name='idea_detail'),
         url(r'^(?P<pk>[0-9]+)/update/status/$', views.UpdateStatus, name='update_status'),
         ])),
+    url(r'^tag/', include([
+        url(r'^(?P<pk>[0-9]+)/$', TagDetail.as_view(), name='tag_detail'),
+        ])),
     url(r'^calendar/', include([
         url(r'^$', IdeasCalendar.as_view(), name='calendar'),
         url(r'^calendar/(?P<platform>[\w]+)/$', PlatformCalendar.as_view(), name='platform_calendar'),
