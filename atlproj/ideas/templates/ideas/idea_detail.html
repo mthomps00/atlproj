@@ -69,7 +69,7 @@
 			<ul class="list-unstyled">
 			<li><strong>Budget: </strong> 
 				<ul>
-				<li>${{ idea.budget|intcomma }} (base)</li>
+				<li>{% if idea.budget %}${{ idea.budget|intcomma }} (base){% endif %}</li>
 				{% if idea.idea_set.all %}
 					{% for component in idea.idea_set.all %}
 					{% if component.budget %}<li>

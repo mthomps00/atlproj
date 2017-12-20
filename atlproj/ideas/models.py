@@ -99,6 +99,7 @@ class Idea(models.Model):
     notes = models.TextField(blank=True)
     gdocs = models.ManyToManyField(GDoc, related_name="ideas", related_query_name="idea", blank=True)
     tags = models.ManyToManyField(Tag, related_name="ideas", related_query_name="idea", blank=True)
+    stakeholders = models.ManyToManyField(User, through='Role')
     
     def calculate_budget(self):
         if self.budget:
@@ -149,6 +150,23 @@ class Idea(models.Model):
         from django.urls import reverse
         return reverse('idea_detail', args=[str(self.pk)])
 
+class Role(models.Model):
+    ROLES = (
+        ('EL', 'Editorial Lead'),
+        ('SL', 'Sales Lead'),
+        ('PL', 'Product Lead'),
+        ('ML', 'Marketing Lead'),
+        ('S', 'Stakeholder'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
+    role = models.CharField(max_length=3, choices=ROLES, default='S')
+
+    def __str__(self):
+        name = "%s: %s (%s)" % (self.idea, self.user.username, self.get_role_display())
+        return name
+    
 class Pitch(models.Model):
     PITCH_STATUSES = (
         ('DRAFT', 'Not yet pitched'),

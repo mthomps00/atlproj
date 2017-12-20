@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Idea, Client, Pitch, Platform, Profile, GDoc, Tag
+from .models import Idea, Client, Pitch, Platform, Profile, GDoc, Tag, Role
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
@@ -11,6 +11,10 @@ class PitchInline(admin.TabularInline):
 
 class ProfileInline(admin.TabularInline):
     model = Profile
+
+class StakeholderInline(admin.TabularInline):
+    model = Role
+    extra = 1
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -27,7 +31,7 @@ class IdeaAdmin(admin.ModelAdmin):
     filter_horizontal = ('gdocs', 'tags')
     search_fields = ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'parent__short_title', 'parent__editorial_title', 'parent__marketing_title']
     inlines = [
-        PitchInline,
+        PitchInline, StakeholderInline,
     ]
 
 class PitchAdmin(admin.ModelAdmin):
