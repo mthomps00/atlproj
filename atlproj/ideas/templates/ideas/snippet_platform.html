@@ -1,0 +1,5 @@
+{% if platform %}
+    <a href="{% url 'ideas_by_status' selector=selector platform=platform %}" class="badge badge-pill badge-light">
+    {{ platform.nickcheck }}
+    </a>
+{% endif %}

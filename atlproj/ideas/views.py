@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.template import loader
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -47,6 +47,7 @@ def home(request):
     }
     return render(request, 'ideas/home.html', context)
 
+@login_required
 def UpdateStatus(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     
@@ -64,6 +65,44 @@ def UpdateStatus(request, pk):
     
     return render(request, 'ideas/update_status.html', context)
 
+@login_required
+def ideas_by_status(request, selector='all', platform=False, flatten=False):
+    today = datetime.today()
+    status = {
+        'draft': ('Not yet available', Idea.objects.filter(status='DRAFT').order_by('-end_date')),
+        'available': ('On offer', Idea.objects.filter(status='ON_OFFER').order_by('start_date', '-date_updated')),
+        'active': ('Live now', Idea.objects.filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')),
+        'complete': ('Already completed', Idea.objects.filter(status='COMPLETED').order_by('-end_date')),
+        'archived': ('No longer available', Idea.objects.filter(status='ARCHIVED').order_by('-end_date')),
+        'all': ('All ideas', Idea.objects.all()),
+    }
+    
+    try:
+        ideas = status[selector][1]
+    except:
+        raise Http404("That is not a valid status.")
+    
+    if platform:
+        platform = get_object_or_404(Platform, name=platform)
+        ideas = ideas.filter(platform=platform)
+
+    display_name = status[selector][0]
+    
+    if not request.user.groups.filter(name='Editorial'):
+        ideas = ideas.exclude(status='DRAFT').exclude(status='ARCHIVED')
+    
+    if flatten == False:
+        ideas = ideas.filter(parent__isnull=True)
+    
+    context = {
+        'ideas': ideas,
+        'platform': platform,
+        'display_name': display_name,
+        'selector': selector,
+        'statuses': list(status.keys()),
+        'flatten': flatten,
+    }
+    return render(request, 'ideas/ideas_flexlist.html', context)
 
 #####################
 # CLASS-BASED VIEWS #
@@ -104,6 +143,16 @@ class CompletedIdeas(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CompletedIdeas, self).get_context_data(**kwargs)
+        context['complete'] = True
+        return context
+    
+class AllIdeas(LoginRequiredMixin, ListView):
+    today = datetime.today()
+    queryset = Idea.objects.all()
+    context_object_name = 'object_list'
+
+    def get_context_data(self, **kwargs):
+        context = super(AllIdeas, self).get_context_data(**kwargs)
         context['complete'] = True
         return context
     

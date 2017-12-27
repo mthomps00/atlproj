@@ -143,6 +143,22 @@ class Idea(models.Model):
         
         return title
         
+    def get_selector(self):
+        
+        selector_list = {
+            'DRAFT': 'draft',
+            'ON_OFFER': 'available',
+            'LIVE': 'active',
+            'COMPLETED': 'complete',
+            'ARCHIVED': 'archived',
+        }
+        
+        try:
+            selector_list[self.status]
+            return selector_list[self.status]
+        except:
+            return 'all'
+
     def __str__(self):
         return self.title()
     

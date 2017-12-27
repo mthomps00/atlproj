@@ -17,6 +17,15 @@ def short_platform(item, *args, **kwargs):
         display = 'calendar'
     return {'platform': platform, 'display': display}
     
+@register.inclusion_tag('snippet_platform.html')
+def show_platform(item, *args, **kwargs):
+    platform = item.platform
+    if kwargs:
+        selector = kwargs['selector']
+    else:
+        selector = item.get_selector()
+    return {'platform': platform, 'selector': selector}
+    
 @register.inclusion_tag('snippet_ideachildren.html')
 def idea_children(idea):
     children = idea.idea_set.all()

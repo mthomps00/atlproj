@@ -6,6 +6,16 @@ from atlproj.urls import *
 urlpatterns = [
     url('', include('social_django.urls', namespace='social')),
     url(r'^$', views.index, name='index'),
+    url(r'^list/', include([
+        url(r'^$', views.ideas_by_status, name='all_ideas'),
+        url(r'^(?P<selector>[\w]+)/$', views.ideas_by_status, name='ideas_by_status'),
+        url(r'^(?P<selector>[\w]+)/(?P<platform>[\w]+)/$', views.ideas_by_status, name='ideas_by_status'),
+        ])),
+    url(r'^flat/', include([
+        url(r'^$', views.ideas_by_status, name='all_ideas_flattened'),
+        url(r'^(?P<selector>[\w]+)/$', views.ideas_by_status, name='ideas_by_status_flattened'),
+        url(r'^(?P<selector>[\w]+)/(?P<platform>[\w]+)/$', views.ideas_by_status, name='ideas_by_status_flattened'),
+        ]), { 'flatten' : True, }),
     url(r'^available/', include([
         url(r'^$', IdeasList.as_view(), name='idea_list'),
         url(r'^(?P<platform>[\w]+)/$', PlatformIdeasList.as_view(), name='platform_idea_list'),

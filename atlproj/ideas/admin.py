@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Idea, Client, Pitch, Platform, Profile, GDoc, Tag, Role
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.utils.html import format_html
 
 # Register your models here.
 
@@ -24,8 +25,8 @@ class IdeaAdmin(admin.ModelAdmin):
         ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'gdocs', 'tags']}),
         ('Presentation', {'fields': ['design', 'preview_url', 'live_url', 'slug']}),
     ]
-    list_display = ('title', 'date_updated', 'status', 'platform', 'start_date', 'end_date')
-    list_filter = ('platform', 'date_updated', 'status')
+    list_display = ('admintitle', 'status', 'platform', 'start_date', 'end_date', 'date_updated')
+    list_filter = ('status', 'platform', 'date_updated')
     list_editable = ('status', 'platform', 'start_date', 'end_date')
     raw_id_fields = ('parent',)
     filter_horizontal = ('gdocs', 'tags')
@@ -33,6 +34,24 @@ class IdeaAdmin(admin.ModelAdmin):
     inlines = [
         PitchInline, StakeholderInline,
     ]
+    
+    def get_queryset(self, request):
+        qs = super(IdeaAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        elif not request.user.groups.filter(name='Editorial'):
+            qs = qs.exclude(status='DRAFT')
+        return qs
+        
+    def admintitle(self, obj):
+        if obj.parent:
+            return format_html(
+                '<small style="text-transform: uppercase; color: #CCC">{}</small><br />{}',
+                obj.parent,
+                obj.title(),
+                )
+        else:
+            return obj.title()
 
 class PitchAdmin(admin.ModelAdmin):
     list_display = ('idea', 'client', 'status', 'sell_by', 'notes')

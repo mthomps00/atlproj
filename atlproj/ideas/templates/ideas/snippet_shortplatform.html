@@ -1,10 +1,10 @@
 {% if platform %}
     {% if display == "list" %}
-        <a href="{% url 'platform_idea_list' platform %}" class="badge badge-pill badge-info">
+        <a href="{% url 'platform_idea_list' platform %}" class="badge badge-pill badge-light">
     {% elif display == "current" %}
-        <a href="{% url 'platform_current_list' platform %}" class="badge badge-pill badge-info">
+        <a href="{% url 'platform_current_list' platform %}" class="badge badge-pill badge-light">
     {% else %}
-        <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-info" title="Calendar of ideas for ">
+        <a href="{% url 'platform_calendar' platform %}" class="badge badge-pill badge-light" title="Calendar of ideas for ">
     {% endif %}
     {{ platform.nickcheck }}
     </a>

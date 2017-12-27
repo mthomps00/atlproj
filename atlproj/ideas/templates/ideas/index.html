@@ -35,19 +35,37 @@
 								<a class="nav-link" href="{% url "social:begin" "google-oauth2" %}?next={% url 'index' %}">Log In</a>
 							</li>
 							{% else %}
-							<li class="nav-item dropdown{% block ideas-nav %}{% endblock %}">
-								<a class="nav-link dropdown-toggle" href="#" role="button" id="ideas-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ideas</a>
-								<div class="dropdown-menu" aria-labelledby="ideas-menu-link">
-									<a class="dropdown-item" href="{% url 'index' %}">Dashboard</a>
-									<a class="dropdown-item" href="{% url 'idea_list' %}">Available</a>
-								    <a class="dropdown-item" href="{% url 'current_list' %}">Now active</a>
-								    <a class="dropdown-item" href="{% url 'complete_list' %}">Archived</a>
-								    {% if request.user|has_group:"Sales" or request.user|has_group:"Marketing" %}
-								    <a class="dropdown-item" href="{% url 'pitch_list' %}">Pitches</a>
-								    <a class="dropdown-item" href="{% url 'sold_pitches' %}">Sold pitches</a>
-								    {% endif %}
+							<li class="nav-item mr-2 dropdown{% block ideas-nav %}{% endblock %}">
+								<div class="btn-group">
+									<a class="nav-link btn btn-light" role="button" href="{% url 'index' %}">Ideas</a>
+									<a class="nav-link dropdown-toggle dropdown-toggle-split btn btn-light" href="#" role="button" id="ideas-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span class="sr-only">Toggle</span>
+									</a>
+									<div class="dropdown-menu" aria-labelledby="ideas-menu-link">
+										<a class="dropdown-item" href="{% url 'all_ideas' %}">All</a>
+									    <a class="dropdown-item" href="{% url 'ideas_by_status' selector='available' %}">Available</a>
+									    <a class="dropdown-item" href="{% url 'ideas_by_status' selector='active' %}">Now live</a>
+									    <a class="dropdown-item" href="{% url 'ideas_by_status' selector='complete' %}">Completed</a>
+									    {% if request.user|has_group:"Editorial" %}
+									    <a class="dropdown-item" href="{% url 'ideas_by_status' selector='draft' %}">Not yet available</a>
+									    <a class="dropdown-item" href="{% url 'ideas_by_status' selector='archived' %}">Archived</a>
+									    {% endif %}
+									</div>
 								</div>
 							</li>
+						    {% if request.user|has_group:"Sales" or request.user|has_group:"Marketing" %}
+							<li class="nav-item dropdown{% block pitches-nav %}{% endblock %}">
+								<div class="btn-group">
+									<a class="nav-link btn btn-light" role="button" href="{% url 'pitch_list' %}">Pitches</a>
+									<a class="nav-link dropdown-toggle dropdown-toggle-split btn btn-light" href="#" role="button" id="pitch-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span class="sr-only">Toggle</span>
+									</a>
+									<div class="dropdown-menu" aria-labelledby="pitch-menu-link">
+									    <a class="dropdown-item" href="{% url 'sold_pitches' %}">Sold</a>
+									</div>
+								</div>
+							</li>
+						    {% endif %}
 							<li class="nav-item {% block cal-nav %}{% endblock %}">
 								<a class="nav-link" href="{% url 'calendar' %}">Calendar</a>
 							</li>
@@ -78,7 +96,7 @@
 						{% if perms.ideas.change_idea %} 
 	    				<small><a href="{% url 'admin:ideas_idea_change' idea.pk %}" class="btn btn-primary btn-sm" target="new">Edit</a></small> 
 						{% endif %}
-	    				{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
+	    				{% show_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 	    			</p>
 		        {% endfor %}
 			</div>
@@ -95,7 +113,7 @@
 				{% if ideas_list %}
 				    <ul>
 				    {% for idea in ideas_list %}
-		    			<li>{% short_platform idea display="list" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
+		    			<li>{% show_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 		    			<br />
 		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
 		    			{% idea_children idea %}
@@ -116,7 +134,7 @@
 				{% if active_ideas %}
 					<ul>
 					{% for idea in active_ideas %}
-						<li>{% short_platform idea display="current" %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
+						<li>{% show_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 		    			<br />
 		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
 		    			</li>

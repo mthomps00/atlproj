@@ -1,0 +1,92 @@
+{% extends "ideas/index.html" %}
+
+{% load ideas_extras %}
+
+	{% block ideas-nav %} active{% endblock %}
+
+    {% block content %}
+	<h1 class="display-4">
+		{{ display_name }}
+	</h1>
+	
+	<div class="mb-3">
+	{% for status in statuses %}
+		{% if status != 'draft' or request.user|has_group:'Editorial' %}
+    	{% if status != 'archived' or request.user|has_group:'Editorial' %}
+		<a role="button" class="btn btn-sm 
+		{% if status == selector %}btn-primary{% else %}btn-secondary{% endif %}" href="
+		{% if flatten %}
+			{% if platform %}
+				{% url 'ideas_by_status_flattened' selector=status platform=platform %}
+			{% else %}
+				{% url 'ideas_by_status_flattened' selector=status %}
+			{% endif %}
+		{% else %}
+			{% if platform %}
+				{% url 'ideas_by_status' selector=status platform=platform %}
+			{% else %}
+				{% url 'ideas_by_status' selector=status %}
+			{% endif %}
+		{% endif %}">
+			{{ status }}
+		</a>
+		{% endif %}
+		{% endif %}
+	{% endfor %}
+	
+	{% if platform %}
+	<a href="{% url 'ideas_by_status' selector=selector %}" class="ml-3 btn btn-sm btn-dark">{{ platform.title }} ✖</a>
+	{% endif %}
+	
+	</div>
+	
+	{% if ideas %}
+	    <table class="table table-sm mt-3" id="idea-table">
+	    	<thead>
+	    		<tr>
+	    			<th class="w-25">Internal title</th>
+	    			{% if not platform %}<th>Platform</th>{% endif %}
+	    			<th>Timing</th>
+	    			{% if selector == 'all' %}<th>Status</th>{% endif %}
+	    			<th class="w-25">Description</th>
+	    			{% if perms.ideas.change_idea %}
+	    			<th><a class="btn btn-sm btn-primary" href="{% url 'admin:ideas_idea_changelist' %}">Edit all</a></th>
+	    			{% endif %}
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	        {% for idea in ideas %}
+	        	{% if idea.status != 'DRAFT' or request.user|has_group:'Editorial' %}
+	        	<tr>
+	        		<td><a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
+	        		{% idea_children idea %}
+	        		</td>
+	        		{% if not platform %}<td>{% show_platform idea selector=selector %}</td>{% endif %}
+	        		<td>{{ idea.start_date|date:"M. j" }}{% if idea.end_date and idea.end_date != idea.start_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %}</td>
+	    			{% if selector == 'all' %}<td>{{ idea.get_status_display }}</td>{% endif %}
+	        		<td>{{ idea.description }}</td>
+	    			{% if perms.ideas.change_idea %}<td><a class="btn btn-primary btn-sm" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a></td>{% endif %}
+	        	</tr>
+	        	{% endif %}
+	        {% endfor %}
+	        </tbody>
+	    </table>
+	{% else %}
+	    <p>No ideas fit this description.</p>
+	{% endif %}
+	
+	<p class="mt-3"><em><strong>Note:</strong> Ideas that are components of larger projects are
+	{% if flatten %}currently displayed on their own lines. <a href="{% if platform %}{% url 'ideas_by_status' selector=selector platform=platform %}{% else %}{% url 'ideas_by_status' selector=selector %}{% endif %}">Show only with parents?
+	{% else %}currently shown only if the larger project is displayed. <a href="{% if platform %}{% url 'ideas_by_status_flattened' selector=selector platform=platform %}{% else %}{% url 'ideas_by_status_flattened' selector=selector %}{% endif %}">Show everything?{% endif %}</a></em></p>
+	
+	{% endblock %}
+	
+	{% block extendfooter %}
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script>
+		$(document).ready( function () {
+			$('#idea-table').DataTable();
+		} );
+	</script>
+	{% endblock %}
