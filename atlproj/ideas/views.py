@@ -10,6 +10,7 @@ from django.views.generic.dates import YearArchiveView
 from django.views.generic.edit import UpdateView
 from ideas.models import Idea, Client, Pitch, Platform, Tag
 from ideas.forms import IdeaStatus
+from collections import OrderedDict
 
 #################
 # REGULAR VIEWS #
@@ -20,12 +21,14 @@ def index(request):
     today = datetime.today()
     ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)[:10]
     active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')[:10]
-    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date')[:25]
+    need_start_dates = Idea.objects.filter(status='COMMITTED').filter(start_date__isnull=True)
+    calendar = Idea.objects.filter(start_date__gte=today).exclude(status='COMMITTED').order_by('start_date')[:25]
     
     # These three QuerySets are to combine a few types of ideas that need to be updated
     live_after_end_date = Idea.objects.filter(status='LIVE').filter(end_date__lte=today)
-    not_live_after_start_date = Idea.objects.filter(status='COMMITTED').filter(start_date__lte=today)
-    need_updates = live_after_end_date.union(not_live_after_start_date)
+    not_live_after_start_date = Idea.objects.filter(status='SCHEDULED').filter(start_date__lte=today)
+    committed_with_start_date = Idea.objects.filter(status='COMMITTED').filter(start_date__isnull=False)
+    need_updates = live_after_end_date | not_live_after_start_date | committed_with_start_date
 
     platforms = Platform.objects.all()
     context = {
@@ -34,13 +37,14 @@ def index(request):
         'active_ideas': active_ideas,
         'ideas_list': ideas_list,
         'need_updates': need_updates,
+        'need_start_dates': need_start_dates,
     }
     return render(request, 'ideas/index.html', context)
     
 def home(request):
     today = datetime.today()
     active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')
-    calendar = Idea.objects.filter(status='COMMITTED').filter(start_date__gte=today).order_by('start_date')
+    calendar = Idea.objects.filter(status='SCHEDULED').filter(start_date__gte=today).order_by('start_date')
     context = {
         'calendar': calendar,
         'active_ideas': active_ideas,
@@ -70,8 +74,10 @@ def ideas_by_status(request, selector='all', platform=False, flatten=False):
     today = datetime.today()
     status = {
         'draft': ('Not yet available', Idea.objects.filter(status='DRAFT').order_by('-end_date')),
-        'available': ('On offer', Idea.objects.filter(status='ON_OFFER').order_by('start_date', '-date_updated')),
-        'active': ('Live now', Idea.objects.filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')),
+        'available': ('Available to pitch', Idea.objects.filter(status='ON_OFFER').order_by('start_date', '-date_updated')),
+        'committed': ('Committed, but not yet scheduled', Idea.objects.filter(status='COMMITTED').order_by('start_date')),
+        'scheduled': ('Committed and scheduled', Idea.objects.filter(status='SCHEDULED').order_by('start_date', '-date_updated')),
+        'active': ('Active now', Idea.objects.filter(status='LIVE').exclude(end_date__lte=today).order_by('start_date', '-date_updated')),
         'complete': ('Already completed', Idea.objects.filter(status='COMPLETED').order_by('-end_date')),
         'archived': ('No longer available', Idea.objects.filter(status='ARCHIVED').order_by('-end_date')),
         'all': ('All ideas', Idea.objects.all()),
@@ -99,7 +105,7 @@ def ideas_by_status(request, selector='all', platform=False, flatten=False):
         'platform': platform,
         'display_name': display_name,
         'selector': selector,
-        'statuses': list(status.keys()),
+        'statuses': list(status),
         'flatten': flatten,
     }
     return render(request, 'ideas/ideas_flexlist.html', context)

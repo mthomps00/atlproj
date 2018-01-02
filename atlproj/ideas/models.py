@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
 from datetime import date, datetime, timedelta
 from django.dispatch import receiver
@@ -53,10 +55,11 @@ class Tag(models.Model):
 class Idea(models.Model):
     STATUSES = (
         ('DRAFT', 'Not yet approved'),
-        ('ON_OFFER', 'On offer'),
-        ('TENTATIVE', 'Tentative'),
-        ('LIVE', 'Live'),
-        ('COMMITTED', 'Committed'),
+        ('ON_OFFER', 'Available to pitch'),
+        ('TENTATIVE', 'Still tentative'),
+        ('COMMITTED', 'Committed but not yet scheduled'),
+        ('SCHEDULED', 'Committed and scheduled'),
+        ('LIVE', 'Currently active'),
         ('ARCHIVED', 'Archived'),
         ('COMPLETED', 'Completed'),
     )
@@ -128,6 +131,11 @@ class Idea(models.Model):
                 earliest_start_date = "The earliest start date for this project is %s." % verbose_calculated_date
             else:
                 earliest_start_date = "The lead time for this project has not been defined. Please determine lead time before pitching."
+        elif self.status == "SCHEDULED":
+            if self.start_date:
+                earliest_start_date = "The start date for this project is set: %s" % self.start_date.srftime("%B %m, %Y")
+            else:
+                earliest_start_date = "A start date for this project has been chosen, but isn't yet in the database."
         else:
             earliest_start_date = "This project is not yet ready to pitch. Please finalize details before pitching."
         return earliest_start_date
@@ -148,8 +156,10 @@ class Idea(models.Model):
         selector_list = {
             'DRAFT': 'draft',
             'ON_OFFER': 'available',
-            'LIVE': 'active',
+            'SCHEDULED': 'scheduled',
+            'COMMITTED': 'committed',
             'COMPLETED': 'complete',
+            'LIVE': 'active',
             'ARCHIVED': 'archived',
         }
         
@@ -165,6 +175,14 @@ class Idea(models.Model):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('idea_detail', args=[str(self.pk)])
+        
+    def clean(self):
+        # Don't allow scheduled entries to exist without start dates.
+        if self.status == 'SCHEDULED' and self.start_date is None:
+            raise ValidationError(_('If the idea\'s already scheduled, please add the start date or change the status to "Committed, but not yet scheduled."'))
+        # Set the pub_date for published items if it hasn't been set already.
+        if self.status == 'COMMITTED' and self.start_date is not None:
+            raise ValidationError(_('Looks like this idea has a start date, so its status should be listed as "Committed and scheduled."'))
 
 class Role(models.Model):
     ROLES = (

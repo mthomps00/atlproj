@@ -164,6 +164,16 @@
 		        {% endfor %}
 				    </ul>
 				{% if calendar|length > 25 %}<h6><a href="{% url 'calendar' %}">See all >></a></h6>{% endif %}
+				
+				{% if need_start_dates %}
+				<h6>Not yet scheduled:</h6>
+				<ul>
+					{% for item in need_start_dates %}
+						<li><a href="{% url 'idea_detail' item.id %}">{{ item }}</a></li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+				
 				{% else %}
 				    <p>No projects are coming aboard anytime soon.</p>
 				{% endif %}

@@ -40,7 +40,7 @@
                 <a href="{{ site_url }}">{% trans 'Public home page' %}</a> /
             {% endif %}
             <a href="{% url 'index' %}">Dashboard</a> /
-            <a href="{% url 'idea_list' %}">Ideas</a> / 
+            <a href="{% url 'all_ideas' %}">All ideas</a> / 
         	<a href="{% url 'calendar' %}">Calendar</a> /
             {% if user.is_active and user.is_staff %}
                 {% url 'django-admindocs-docroot' as docsroot %}
