@@ -108,7 +108,7 @@
 				
 				{% block content %}
 				
-				<h3>Available</h3>
+				<a href="{% url 'ideas_by_status' selector='available' %}"><h3>Available to pitch</h3></a>
 				
 				{% if ideas_list %}
 				    <ul>
@@ -120,7 +120,6 @@
 		    			</li>
 			        {% endfor %}
 				    </ul>
-				    {% if ideas_list|length > 10 %}<h6><a href="{% url 'idea_list' %}">See all >></a></h6>{% endif %}
 				{% else %}
 				    <p>We're fresh out of ideas, sorry.</p>
 				{% endif %}
@@ -129,7 +128,7 @@
 			
 			<div class="col">
 				
-				<h3>Now active</h3>
+				<a href="{% url 'ideas_by_status' selector='active' %}"><h3>Now active</h3></a>
 				
 				{% if active_ideas %}
 					<ul>
@@ -140,7 +139,6 @@
 		    			</li>
 			        {% endfor %}
 				    </ul>
-				    {% if active_ideas|length > 10 %}<h6><a href="{% url 'current_list' %}">See all >></a></h6>{% endif %}
 				{% else %}
 				    <p>No projects are currently ongoing.</p>
 				{% endif %}
@@ -148,7 +146,7 @@
 				
 			<div class="col">
 				
-				<h3>Coming soon</h3>
+				<a href="{% url 'calendar' %}"><h3>Coming soon</h3></a>
 				
 				{% if calendar %}
 				{% regroup calendar by start_date|date:"F" as calendar_list %}
