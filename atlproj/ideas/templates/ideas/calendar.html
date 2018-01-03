@@ -24,7 +24,7 @@
 				<tbody>
 					{% for item in month.list %}
 					<tr>
-						<th scope="row">{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</th>
+						<th scope="row">{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" or item.status == "COMMITTED" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</th>
 						<td class="w-33">
 							{% short_platform item %}
 							<strong>

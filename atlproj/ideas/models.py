@@ -180,9 +180,6 @@ class Idea(models.Model):
         # Don't allow scheduled entries to exist without start dates.
         if self.status == 'SCHEDULED' and self.start_date is None:
             raise ValidationError(_('If the idea\'s already scheduled, please add the start date or change the status to "Committed, but not yet scheduled."'))
-        # Set the pub_date for published items if it hasn't been set already.
-        if self.status == 'COMMITTED' and self.start_date is not None:
-            raise ValidationError(_('Looks like this idea has a start date, so its status should be listed as "Committed and scheduled."'))
 
 class Role(models.Model):
     ROLES = (

@@ -155,7 +155,7 @@
 					<li><strong>{{ month.grouper }}</strong>
 						<ul>
 						{% for item in month.list %}
-							<li><strong>{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</strong> - <a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a> </li>
+							<li><strong>{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" or item.status == "COMMITTED" %}<span class="text-muted">?{% else %}{{ item.start_date|date:"j" }}{% endif %}</strong> - <a href="{% url 'idea_detail' item.id %}"{% if item.status == "ON_OFFER" or item.status == "TENTATIVE" %} class="text-warning"{% endif %}>{{ item }}</a> </li>
 						{% endfor %}
 						</ul>
 					</li>
