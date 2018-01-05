@@ -146,7 +146,7 @@
 				
 			<div class="col">
 				
-				<a href="{% url 'calendar' %}"><h3>Coming soon</h3></a>
+				<a href="{% url 'calendar' %}"><h3>Looking ahead</h3></a>
 				
 				{% if calendar %}
 				{% regroup calendar by start_date|date:"F" as calendar_list %}
@@ -164,7 +164,7 @@
 				{% if calendar|length > 25 %}<h6><a href="{% url 'calendar' %}">See all >></a></h6>{% endif %}
 				
 				{% if need_start_dates %}
-				<h6>Not yet scheduled:</h6>
+				<h6>Confirmed, start date not set:</h6>
 				<ul>
 					{% for item in need_start_dates %}
 						<li><a href="{% url 'idea_detail' item.id %}">{{ item }}</a></li>

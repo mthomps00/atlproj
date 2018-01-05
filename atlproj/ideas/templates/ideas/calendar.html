@@ -9,7 +9,7 @@
 
 		{% regroup object_list by start_date|date:"F" as calendar_list %}
 	    	
-	    	<h1 class="display-4">Upcoming</h1>
+	    	<h1 class="display-4">Looking ahead</h1>
 	    	{% if platform %}
 	    	<ol class="breadcrumb">
 				<li class="breadcrumb-item"><a href="{% url 'calendar' %}">All</a></li>

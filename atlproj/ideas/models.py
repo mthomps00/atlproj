@@ -52,6 +52,20 @@ class Tag(models.Model):
         from django.urls import reverse
         return reverse('tag_detail', args=[str(self.pk)])
 
+class IdeaStatus(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    long_name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True)
+    
+    # How should ideas with this status be sorted by default on list pages?
+    default_sort_order = models.CharField(max_length=255, blank=True, default='start_date')
+
+    # Who can see ideas with this status?
+    visible_to_sales = models.BooleanField(default=True)
+    visible_to_marketing = models.BooleanField(default=True)
+    visible_to_product = models.BooleanField(default=True)
+    visible_to_editorial = models.BooleanField(default=True)
+
 class Idea(models.Model):
     STATUSES = (
         ('DRAFT', 'Not yet approved'),
@@ -70,11 +84,11 @@ class Idea(models.Model):
     )
     
     # TOP-LEVEL: fields containing high-level metadata about the project
-    short_title = models.CharField(max_length=255)
     marketing_title = models.CharField(max_length=255, blank=True)
     editorial_title = models.CharField(max_length=255, blank=True)
     subtitle = models.CharField(max_length=255, blank=True)
     date_submitted = models.DateField('date submitted', default=date.today)
+    short_title = models.CharField(max_length=255, unique_for_year=date_submitted)
     date_updated = models.DateField('last updated', auto_now=True)
     description = models.TextField(blank=True)
     
@@ -105,10 +119,16 @@ class Idea(models.Model):
     stakeholders = models.ManyToManyField(User, through='Role')
     
     def calculate_budget(self):
+        
+        # start with the baseline budget
         if self.budget:
             budget = self.budget
+        
+        # if there's no baseline budget, assume that's 0
         else:
             budget = 0
+        
+        # if this idea includes other ideas, tabulate their budgets and add those to the total
         children = self.idea_set.all()
         for child in children:
             if child.budget:
@@ -118,11 +138,14 @@ class Idea(models.Model):
     def get_earliest_start_date(self):
         "Uses the lead time to determine the earliest start date"
     
+        # Probably need to move most of this code into the template, and make this function much neater.
         if self.status == "COMPLETED" or self.status == "LIVE":
             earliest_start_date = "This project is already live or completed."
         elif self.status == "ARCHIVED":
             earliest_start_date = "This project has been archived. Please consult edit about a status change before pitching."
         elif self.status == "COMMITTED" or self.status == "ON_OFFER":
+            
+            # this is the core of the function, and would be the only thing left in the neater version
             if self.lead_time:
                 today = datetime.today()
                 lt = timedelta(weeks=self.lead_time)
@@ -141,16 +164,20 @@ class Idea(models.Model):
         return earliest_start_date
 
     def title(self):
+        
+        # by default, use the short title
         title = self.short_title
         
+        # if there's an editorial title, use that as the main title
         if self.editorial_title:
             title = self.editorial_title
         
+        # if there's a marketing title, show it in parentheses
         if self.marketing_title:
             title += " (%s)" % self.marketing_title
-        
         return title
-        
+    
+    # this function is about to be deprecated by the new IdeaStatus model
     def get_selector(self):
         
         selector_list = {

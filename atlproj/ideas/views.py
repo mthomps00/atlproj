@@ -72,6 +72,7 @@ def UpdateStatus(request, pk):
 @login_required
 def ideas_by_status(request, selector='all', platform=False, flatten=False):
     today = datetime.today()
+    
     status = {
         'draft': ('Not yet available', Idea.objects.filter(status='DRAFT').order_by('-end_date')),
         'available': ('Available to pitch', Idea.objects.filter(status='ON_OFFER').order_by('start_date', '-date_updated')),
