@@ -88,7 +88,7 @@ class Idea(models.Model):
     editorial_title = models.CharField(max_length=255, blank=True)
     subtitle = models.CharField(max_length=255, blank=True)
     date_submitted = models.DateField('date submitted', default=date.today)
-    short_title = models.CharField(max_length=255, unique_for_year=date_submitted)
+    short_title = models.CharField(max_length=255, unique_for_year='date_submitted')
     date_updated = models.DateField('last updated', auto_now=True)
     description = models.TextField(blank=True)
     
