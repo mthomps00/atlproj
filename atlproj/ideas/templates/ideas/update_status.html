@@ -7,15 +7,43 @@
     {% block title %}{{ idea }}{% endblock %}
 
     {% block content %}
-    {% if form %}
     
+    <h1>{{ idea }}</h1>
+    
+    {% if form %}
     <form action="{% url 'update_status' idea.id %}" method="post">
-        <div class="form-check form-check-inline">
+
             {% csrf_token %}
-            {{ form }}
-            <input type="hidden" name="next" value="{{ request.path }}">
-            <input type="submit" value="Submit" />
-        </div>
+
+        <fieldset class="form-group">
+            <div class="row">
+              <legend class="col-form-label col-sm-2 pt-0">Status:</legend>
+            
+                <div class="col-sm-10">
+                    {{ form.status.errors }}
+    
+                    {% for radio in form.status %}
+                    <div class="form-check">
+                        {{ radio.tag }}
+                        <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </fieldset>
+
+        {% if idea.idea_set.all %}
+            <div class="form-group row">
+                {{ form.update_children.errors }}
+                <div class="col-sm-3">Update child ideas too?</div>
+                <div class="col-sm-9">
+                    {{ form.update_children }}
+                </div>
+            </div>
+        {% endif %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <input type="submit" value="Submit" />
+            
     </form>
     
     {% endif %}

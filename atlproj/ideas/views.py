@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import datetime
-from django.http import HttpResponse, Http404
+from django.utils.http import is_safe_url
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
+from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.dates import YearArchiveView
@@ -54,13 +56,21 @@ def home(request):
 @login_required
 def UpdateStatus(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
-    
+
     if request.method == 'POST':
         form = IdeaStatus(request.POST, instance=idea)
         if form.is_valid():
+            if idea.idea_set.all():
+                update_children = form.cleaned_data['update_children']
+                status = form.cleaned_data['status']
+                if update_children:
+                    for child in idea.idea_set.all():
+                        child.status = status
+                        child.save()
             form.save()
+            return HttpResponseRedirect(reverse('idea_detail', args=(pk,)))
     else:
-        form = IdeaStatus()
+        form = IdeaStatus(instance=idea)
     
     context = {
         'form': form,

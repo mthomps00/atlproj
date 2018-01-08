@@ -12,7 +12,8 @@
 	<h1 class="display-4">{{ idea }} 
 	{% if perms.ideas.change_idea %}
 		<div class="btn-group" role="group" aria-label="Edit idea">
-			<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>
+			{% if request.user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>{% endif %}
+			<a class="btn btn-primary" href="{% url 'update_status' idea.id %}">Change status</a>
 		</div>
 	{% endif %}
 	</h1>

@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.contrib.auth import views as auth_views
 from . import views
 from ideas.views import *
 from atlproj.urls import *
@@ -30,5 +31,8 @@ urlpatterns = [
     url(r'^pitches/', include([
         url(r'^$', PitchList.as_view(), name='pitch_list'),
         url(r'^sold/$', SoldPitches.as_view(), name='sold_pitches'),
+        ])),
+    url(r'^secret/', include([
+        url(r'^login/$', auth_views.LoginView.as_view(template_name='login.html'), name='secret_login'),
         ])),
 ]
