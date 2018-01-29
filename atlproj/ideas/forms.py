@@ -13,3 +13,8 @@ class IdeaStatus(forms.ModelForm):
             'status': forms.RadioSelect(attrs={'class': 'form-check-input'}),
             'update_children': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+class UpdateIdea(forms.ModelForm):
+    class Meta:
+        model = Idea
+        fields = ['short_title', 'status']

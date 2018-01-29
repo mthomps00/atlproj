@@ -13,7 +13,7 @@
 	{% if perms.ideas.change_idea %}
 		<div class="btn-group" role="group" aria-label="Edit idea">
 			{% if request.user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>{% endif %}
-			<a class="btn btn-primary" href="{% url 'update_status' idea.id %}">Change status</a>
+			<a class="btn btn-primary" href="{% url 'update_status' idea.id %}">Change status (warning: still buggy)</a>
 		</div>
 	{% endif %}
 	</h1>
@@ -39,7 +39,7 @@
 		</li>
 		{% if idea.gdocs.all %}
 		<li class="nav-item">
-			<a class="nav-link" id="docs-tab" data-toggle="tab" href="#docs" role="tab" aria-controls="docs" aria-selected="false">Docs</a>
+			<a class="nav-link" id="docs-tab" data-toggle="tab" href="#docs" role="tab" aria-controls="docs" aria-selected="false">Related URLs</a>
 		</li>
 		{% endif %}
 	</ul>
@@ -150,7 +150,7 @@
 	    	<thead>
 	    		<tr>
 	    			<th>Title</th>
-	    			<th>Date added</th>
+	    			<th>Timing</th>
 	    			<th>Status</th>
 	    			<th>Platform</th>
 	    			<th class="w-50">Description <a class="initialism" data-toggle="collapse" href=".multi-collapse" aria-expanded="false" aria-controls="{% for child in idea.idea_set.all %}{{ child|slugify }} {% endfor %}">[show details]</a></th>
@@ -160,7 +160,12 @@
 		{% for child in idea.idea_set.all %}
 	        	<tr>
 	        		<td><a href="{% url 'idea_detail' child.pk %}">{{ child }}{% if child.marketing_title %} (Marketing title: {{ child.marketing_title }}){% endif %}</child></a></td>
-	        		<td>{{ child.date_submitted|date:"F j, Y" }}</td>
+	        		<td>{% if child.start_date %}
+							{{ child.start_date|date:"M. j" }}
+							{% if child.end_date and child.start_date != child.end_date %}-{{ child.end_date|date:"M. j, Y" }}{% else %}{{ child.start_date|date:", Y" }}{% endif %} 
+							{% if child.length %}({{ child.length }} weeks){% endif %}
+						{% endif %}
+					</td>
 	        		<td>{% if child.status %}{{ child.get_status_display }}{% endif %}</td>
 	        		<td>{% if child.platform %}<span class="badge badge-info">{{ child.platform.title }}</span> {% endif %}</td>
 	        		<td class="w-50">{{ child.description }} 

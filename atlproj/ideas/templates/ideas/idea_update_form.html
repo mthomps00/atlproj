@@ -1,0 +1,24 @@
+{% extends "ideas/index.html" %}
+
+{% load ideas_extras %}
+{% load humanize %}
+
+	{% block ideas-nav %} active{% endblock %}
+    {% block title %}{{ idea }}{% endblock %}
+
+    {% block content %}
+    
+    <h1>{{ idea }}</h1>
+    
+    {% if form %}
+    <form action="" method="post">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+        <input type="submit" value="Update" />
+            
+    </form>
+    
+    {% endif %}
+    {% endblock %}

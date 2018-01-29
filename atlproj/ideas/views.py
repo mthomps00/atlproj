@@ -24,7 +24,7 @@ def index(request):
     ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)[:10]
     active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')[:10]
     need_start_dates = Idea.objects.filter(status='COMMITTED').filter(start_date__isnull=True)
-    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date')[:25]
+    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date').exclude(status='ARCHIVED')
     
     # These three QuerySets are to combine a few types of ideas that need to be updated
     live_after_end_date = Idea.objects.filter(status='LIVE').filter(end_date__lte=today)
@@ -56,9 +56,10 @@ def home(request):
 @login_required
 def UpdateStatus(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
+    form = IdeaStatus()
 
     if request.method == 'POST':
-        form = IdeaStatus(request.POST, instance=idea)
+        form = IdeaStatus(request.POST)
         if form.is_valid():
             if idea.idea_set.all():
                 update_children = form.cleaned_data['update_children']
@@ -70,7 +71,7 @@ def UpdateStatus(request, pk):
             form.save()
             return HttpResponseRedirect(reverse('idea_detail', args=(pk,)))
     else:
-        form = IdeaStatus(instance=idea)
+        form = IdeaStatus()
     
     context = {
         'form': form,
@@ -165,3 +166,8 @@ class IdeaDetail(LoginRequiredMixin, DetailView):
     
 class TagDetail(LoginRequiredMixin, DetailView):
     model = Tag
+    
+class UpdateIdea(LoginRequiredMixin, UpdateView):
+    model = Idea
+    fields = ['status']
+    template_name_suffix = '_update_form'

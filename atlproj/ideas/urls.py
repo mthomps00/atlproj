@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^detail/', include([
         url(r'^(?P<pk>[0-9]+)/$', IdeaDetail.as_view(), name='idea_detail'),
         url(r'^(?P<pk>[0-9]+)/update/status/$', views.UpdateStatus, name='update_status'),
+        url(r'^(?P<pk>[0-9]+)/update/$', UpdateIdea.as_view(), name='update_idea'),
         ])),
     url(r'^tag/', include([
         url(r'^(?P<pk>[0-9]+)/$', TagDetail.as_view(), name='tag_detail'),
