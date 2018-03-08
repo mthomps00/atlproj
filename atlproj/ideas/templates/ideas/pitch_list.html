@@ -37,7 +37,7 @@
 	        		<td>{{ pitch.client }}</td>
 	        		<td>{{ pitch.get_status_display }}</td>
 	        		<td>{{ pitch.date_updated|date:"Y-m-d" }}</td>
-	        		<td>{{ pitch.sell_by }}</td>
+	        		<td>{{ pitch.sell_by|date:"Y-m-d" }}</td>
 	        		<td>{{ pitch.notes }}</td>
 	    			{% if perms.ideas.change_pitch %}<td><a href="{% url 'admin:ideas_pitch_change' pitch.pk %}" class="btn btn-primary btn-sm">Edit</a></td>{% endif %}
 	        	</tr>
