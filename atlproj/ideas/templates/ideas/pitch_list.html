@@ -32,8 +32,8 @@
 	    	</thead>
 	    	<tbody>
 	        {% for pitch in pitches %}
-	        	<tr>
-	        		<td><a href="{% url 'idea_detail' pitch.idea.pk %}">{{ pitch.idea }}</a></td>
+	        	<tr{% if pitch.status == "SUCCESS" %} class="bg-info text-light"{% endif %}>
+	        		<td><a href="{% url 'idea_detail' pitch.idea.pk %}"{% if pitch.status == "SUCCESS" %} class="text-white"{% endif %}>{{ pitch.idea }}</a></td>
 	        		<td>{{ pitch.client }}</td>
 	        		<td>{{ pitch.get_status_display }}</td>
 	        		<td>{{ pitch.date_updated|date:"Y-m-d" }}</td>
@@ -55,7 +55,9 @@
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 	<script>
 		$(document).ready( function () {
-			$('#pitch-table').DataTable();
+			$('#pitch-table').DataTable({
+				"order": [[ 3, "des" ], [ 4, "des" ], [ 1, "asc" ]]
+			});
 		} );
 	</script>
 	{% endblock %}
