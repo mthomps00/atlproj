@@ -238,7 +238,7 @@
 	{% if perms.ideas.add_pitch %}<a class="btn btn-primary" href="{% url 'admin:ideas_pitch_add' %}">Add new</a>{% endif %}
 	</h3>
 	{% if idea.pitch_set.all %}
-	<table class="table mt-3">
+	<table class="table mt-3" id="idea-table">
     	<thead>
     		<tr>
     			<th>Client</th>
@@ -255,9 +255,9 @@
 		{% for pitch in idea.pitch_set.all %}
 			<tr>
 				<td>{{ pitch.client }}</td>
-				<td>{{ pitch.date_updated }}</td>
+				<td>{{ pitch.date_updated|date:"Y-m-d" }}</td>
 				<td>{{ pitch.get_status_display }}</td>
-				<td>{{ pitch.sell_by|date:"M. j, Y" }}</td>
+				<td>{{ pitch.sell_by|date:"Y-m-d" }}</td>
 				<td>{{ pitch.notes }}</td>
 				{% if perms.ideas.change_pitch %}
 					<td><a href="{% url 'admin:ideas_pitch_change' pitch.pk %}" class="btn btn-primary btn-sm">Edit</a></td>
@@ -279,7 +279,9 @@
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 	<script>
 		$(document).ready( function () {
-			$('#idea-table').DataTable();
+			$('#idea-table').DataTable({
+				"order": [[ 2, "des" ], [ 4, "des" ], [ 1, "asc" ]]
+			});
 		} );
 	</script>
 	{% endblock %}
