@@ -151,7 +151,7 @@ class Idea(models.Model):
                 lt = timedelta(weeks=self.lead_time)
                 calculated_date = today + lt
                 verbose_calculated_date = calculated_date.strftime("%B %m, %Y")
-                earliest_start_date = "The earliest start date for this project is %s." % verbose_calculated_date
+                earliest_start_date = "The editorial team must be given a lead time of at least %s weeks from the point of commitment to launch this project. If it were committed today, the earliest start date for this project would be %s." % (self.lead_time, verbose_calculated_date)
             else:
                 earliest_start_date = "The lead time for this project has not been defined. Please determine lead time before pitching."
         elif self.status == "SCHEDULED":
