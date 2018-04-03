@@ -253,7 +253,7 @@
     	</thead>
     	<tbody>
 		{% for pitch in idea.pitch_set.all %}
-			<tr>
+			<tr{% if pitch.status == "SUCCESS" %} class="bg-info text-light"{% endif %}>
 				<td>{{ pitch.client }}</td>
 				<td>{{ pitch.date_updated|date:"Y-m-d" }}</td>
 				<td>{{ pitch.get_status_display }}</td>

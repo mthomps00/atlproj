@@ -96,6 +96,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.associate_by_email',
 )
 
+SOCIAL_AUTH_DJANGO_WHITELISTED_DOMAINS = ['theatlantic.com', 'atlanticmedia.com']
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
