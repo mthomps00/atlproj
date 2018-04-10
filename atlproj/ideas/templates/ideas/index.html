@@ -115,8 +115,10 @@
 				    {% for idea in ideas_list %}
 		    			<li>{% show_platform idea %} <a href="{% url 'idea_detail' idea.id %}">{{ idea }}</a>
 		    			<br />
-		    			<small class="text-muted">{{ idea.description|truncatewords:50 }}</small>
-		    			{% if idea.notes %}<ul><li><strong>Notes: </strong>{{ idea.notes }}</li></ul>{% endif %}
+		    			<small class="text-muted">
+		    				{{ idea.description|truncatewords:50 }}
+		    				{% if idea.notes %}<br /><strong>Notes: </strong>{{ idea.notes }}{% endif %}
+		    			</small>
 		    			{% idea_children idea %}
 		    			</li>
 			        {% endfor %}
