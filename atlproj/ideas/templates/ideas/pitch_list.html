@@ -21,8 +21,8 @@
 	    <table class="table mt-3" id="pitch-table">
 	    	<thead>
 	    		<tr>
-	    			<th>Idea</th>
 	    			<th>Client</th>
+	    			<th>Ideas</th>
 	    			<th>Status</th>
 	    			<th>Last Updated</th>
 	    			<th>Sell By</th>
@@ -33,8 +33,8 @@
 	    	<tbody>
 	        {% for pitch in pitches %}
 	        	<tr{% if pitch.status == "SUCCESS" %} class="bg-info text-light"{% endif %}>
-	        		<td><a href="{% url 'idea_detail' pitch.idea.pk %}"{% if pitch.status == "SUCCESS" %} class="text-white"{% endif %}>{{ pitch.idea }}</a></td>
 	        		<td>{{ pitch.client }}</td>
+	        		<td>{% if pitch.ideas.all %}{% for idea in pitch.ideas.all %}<a href="{% url 'idea_detail' idea.pk %}"{% if pitch.status == "SUCCESS" %} class="text-white"{% endif %}>{{ idea }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}</td>
 	        		<td>{{ pitch.get_status_display }}</td>
 	        		<td>{{ pitch.date_updated|date:"Y-m-d" }}</td>
 	        		<td>{{ pitch.sell_by|date:"Y-m-d" }}</td>

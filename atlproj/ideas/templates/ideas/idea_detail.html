@@ -13,7 +13,6 @@
 	{% if perms.ideas.change_idea %}
 		<div class="btn-group" role="group" aria-label="Edit idea">
 			{% if request.user.is_staff %}<a class="btn btn-primary" href="{% url 'admin:ideas_idea_change' idea.id %}">Edit</a>{% endif %}
-			<a class="btn btn-primary" href="{% url 'update_status' idea.id %}">Change status (warning: still buggy)</a>
 		</div>
 	{% endif %}
 	</h1>
@@ -237,7 +236,7 @@
 	<h3>Pitches
 	{% if perms.ideas.add_pitch %}<a class="btn btn-primary" href="{% url 'admin:ideas_pitch_add' %}">Add new</a>{% endif %}
 	</h3>
-	{% if idea.pitch_set.all %}
+	{% if idea.pitches.all %}
 	<table class="table mt-3" id="idea-table">
     	<thead>
     		<tr>
@@ -252,7 +251,7 @@
     		</tr>
     	</thead>
     	<tbody>
-		{% for pitch in idea.pitch_set.all %}
+		{% for pitch in idea.pitches.all %}
 			<tr{% if pitch.status == "SUCCESS" %} class="bg-info text-light"{% endif %}>
 				<td>{{ pitch.client }}</td>
 				<td>{{ pitch.date_updated|date:"Y-m-d" }}</td>

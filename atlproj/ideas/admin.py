@@ -7,8 +7,7 @@ from django.utils.html import format_html
 # Register your models here.
 
 class PitchInline(admin.TabularInline):
-    model = Pitch
-    raw_id_fields = ('client',)
+    model = Pitch.ideas.through
 
 class ProfileInline(admin.TabularInline):
     model = Profile
@@ -29,6 +28,7 @@ class IdeaAdmin(admin.ModelAdmin):
     list_filter = ('status', 'platform', 'date_updated')
     list_editable = ('status', 'platform', 'start_date', 'end_date')
     raw_id_fields = ('parent',)
+    radio_fields = { 'status': admin.VERTICAL }
     filter_horizontal = ('gdocs', 'tags')
     search_fields = ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'parent__short_title', 'parent__editorial_title', 'parent__marketing_title']
     inlines = [
@@ -54,10 +54,14 @@ class IdeaAdmin(admin.ModelAdmin):
             return obj.title()
 
 class PitchAdmin(admin.ModelAdmin):
-    list_display = ('idea', 'client', 'status', 'sell_by', 'notes')
-    list_editable = ('client', 'status', 'sell_by')
-    raw_id_fields = ('idea', 'client')
-    search_fields = ['idea__short_title', 'idea__editorial_title', 'idea__marketing_title', 'client__name', 'notes']
+    fields = ('id', 'client', 'ideas', 'status', 'sell_by', 'notes')
+    list_display = ('id', 'client', 'status', 'date_updated', 'date_created', 'sell_by', 'notes')
+    list_editable = ('status', 'sell_by')
+    list_display_links = ('id',)
+    raw_id_fields = ('client',)
+    readonly_fields = ('id',)
+    filter_horizontal = ('ideas',)
+    search_fields = ['ideas__short_title', 'ideas__editorial_title', 'ideas__marketing_title', 'client__name', 'notes']
 
 class PlatformAdmin(admin.ModelAdmin):
     list_display = ('name', 'title', 'nickname')

@@ -2,3 +2,5 @@
 *.pyc
 __pycache__
 local_settings.py
+**/fixtures
+**/people

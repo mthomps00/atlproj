@@ -38,8 +38,8 @@ class GDoc(models.Model):
         return self.name
         
     class Meta:
-        verbose_name = "Google Doc"
-        verbose_name_plural = "Google Docs"
+        verbose_name = "Related URL"
+        verbose_name_plural = "Related URLs"
         
 class Tag(models.Model):
     name = models.CharField(max_length=255)
@@ -236,16 +236,17 @@ class Pitch(models.Model):
         ('DEAD', 'No go'),
     )
 
-    idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
+    idea = models.ForeignKey(Idea, related_name='old_idea', on_delete=models.CASCADE)
+    ideas = models.ManyToManyField(Idea, related_name='pitches', related_query_name='pitch')
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    date_created = models.DateField('date created', default=date.today)
+    date_created = models.DateField('date pitched', default=date.today)
     date_updated = models.DateField('last updated', auto_now=True)
     sell_by = models.DateField('sell_by', blank=True, null=True)
     status = models.CharField(max_length=15, choices=PITCH_STATUSES, default='DRAFT')
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        name = "%s: %s" % (self.idea, self.client)
+        name = "%s: %s" % (self.client, self.date_created)
         return name
     
     class Meta:
