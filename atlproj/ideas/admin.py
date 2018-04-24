@@ -8,7 +8,8 @@ from django.utils.html import format_html
 
 class IdeaPitchedInline(admin.StackedInline):
     model = IdeaPitched
-    readonly_fields = ('id', 'deliverables')
+    fields = (('idea', 'pitch', 'deliverables'), 'notes')
+    readonly_fields = ('deliverables',)
     autocomplete_fields = ['idea', 'pitch']
     
 class PitchInline(admin.TabularInline):
@@ -23,6 +24,7 @@ class StakeholderInline(admin.TabularInline):
 
 class IdeaPitchedAdmin(admin.ModelAdmin):
     search_fields = ['idea__short_title', 'idea__editorial_title', 'idea__marketing_title', 'pitch__client__name', 'notes']
+    autocomplete_fields = ['idea', 'pitch']
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [

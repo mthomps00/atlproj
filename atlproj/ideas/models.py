@@ -262,7 +262,7 @@ class IdeaPitched(models.Model):
     
     def deliverables(self):
         return self.idea.deliverables
-    
+        
     class Meta:
         verbose_name = "idea pitched"
         verbose_name_plural = "ideas pitched"
