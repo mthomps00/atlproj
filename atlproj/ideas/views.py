@@ -147,7 +147,7 @@ class PitchList(LoginRequiredMixin, ListView):
     context_object_name = 'pitches'
 
 class SoldPitches(LoginRequiredMixin, ListView):
-    queryset = Pitch.objects.filter(status='SUCCESS').exclude(idea__status='LIVE').exclude(idea__status='COMPLETED')
+    queryset = Pitch.objects.filter(status='SUCCESS').exclude(ideas__idea__status='LIVE').exclude(ideas__idea__status='COMPLETED')
     template_name = 'ideas/pitch_list.html'
     context_object_name = 'pitches'
 

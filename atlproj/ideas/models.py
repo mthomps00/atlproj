@@ -236,8 +236,7 @@ class Pitch(models.Model):
         ('DEAD', 'No go'),
     )
 
-    idea = models.ForeignKey(Idea, related_name='old_idea', on_delete=models.CASCADE)
-    ideas = models.ManyToManyField(Idea, related_name='pitches', related_query_name='pitch')
+    ideas = models.ManyToManyField(Idea, through='IdeaPitched', related_name='pitches', related_query_name='pitch')
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_created = models.DateField('date pitched', default=date.today)
     date_updated = models.DateField('last updated', auto_now=True)
@@ -251,6 +250,22 @@ class Pitch(models.Model):
     
     class Meta:
         verbose_name_plural = "pitches"
+
+class IdeaPitched(models.Model):
+    idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
+    pitch = models.ForeignKey(Pitch, on_delete=models.CASCADE)
+    included = models.BooleanField(default=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return "%s to %s on %s" % (self.idea, self.pitch.client, self.pitch.date_updated)
+    
+    def deliverables(self):
+        return self.idea.deliverables
+    
+    class Meta:
+        verbose_name = "idea pitched"
+        verbose_name_plural = "ideas pitched"
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -1,13 +1,18 @@
 from django.contrib import admin
-from .models import Idea, Client, Pitch, Platform, Profile, GDoc, Tag, Role
+from .models import Idea, Client, Pitch, IdeaPitched, Platform, Profile, GDoc, Tag, Role
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
 
 # Register your models here.
 
+class IdeaPitchedInline(admin.TabularInline):
+    model = IdeaPitched
+    readonly_fields = ('id', 'deliverables')
+    autocomplete_fields = ['idea', 'pitch']
+    
 class PitchInline(admin.TabularInline):
-    model = Pitch.ideas.through
+    model = Pitch
 
 class ProfileInline(admin.TabularInline):
     model = Profile
@@ -15,6 +20,10 @@ class ProfileInline(admin.TabularInline):
 class StakeholderInline(admin.TabularInline):
     model = Role
     extra = 1
+
+class IdeaPitchedAdmin(admin.ModelAdmin):
+    search_fields = ['idea', 'pitch', 'notes']
+    autocomplete_fields = ['idea', 'pitch']
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -28,11 +37,10 @@ class IdeaAdmin(admin.ModelAdmin):
     list_filter = ('status', 'platform', 'date_updated')
     list_editable = ('status', 'platform', 'start_date', 'end_date')
     raw_id_fields = ('parent',)
-    radio_fields = { 'status': admin.VERTICAL }
     filter_horizontal = ('gdocs', 'tags')
     search_fields = ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'parent__short_title', 'parent__editorial_title', 'parent__marketing_title']
     inlines = [
-        PitchInline, StakeholderInline,
+        IdeaPitchedInline, StakeholderInline,
     ]
     
     def get_queryset(self, request):
@@ -40,7 +48,7 @@ class IdeaAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         elif not request.user.groups.filter(name='Editorial'):
-            qs = qs.exclude(status='DRAFT')
+            qs = qs.exclude(status='DRAFT').exclude(status='ARCHIVED')
         return qs
         
     def admintitle(self, obj):
@@ -54,14 +62,17 @@ class IdeaAdmin(admin.ModelAdmin):
             return obj.title()
 
 class PitchAdmin(admin.ModelAdmin):
-    fields = ('id', 'client', 'ideas', 'status', 'sell_by', 'notes')
+    fields = ('id', 'client', 'status', 'date_updated', 'date_created', 'sell_by', 'notes')
     list_display = ('id', 'client', 'status', 'date_updated', 'date_created', 'sell_by', 'notes')
-    list_editable = ('status', 'sell_by')
-    list_display_links = ('id',)
-    raw_id_fields = ('client',)
-    readonly_fields = ('id',)
+    list_editable = ('status', 'sell_by', 'date_created')
+    list_display_links = ('id', 'client')
+    readonly_fields = ('id', 'date_updated')
     filter_horizontal = ('ideas',)
-    search_fields = ['ideas__short_title', 'ideas__editorial_title', 'ideas__marketing_title', 'client__name', 'notes']
+    search_fields = ['ideas__idea__short_title', 'ideas__idea__editorial_title', 'ideas__idea__marketing_title', 'client__name', 'notes']
+    autocomplete_fields = ['ideas',]
+    inlines = [
+        IdeaPitchedInline,
+    ]
 
 class PlatformAdmin(admin.ModelAdmin):
     list_display = ('name', 'title', 'nickname')
@@ -83,10 +94,14 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
 
 class ClientAdmin(admin.ModelAdmin):
+    inlines = [
+        PitchInline,
+    ]
     search_fields = ['name',]
 
 admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch, PitchAdmin)
+admin.site.register(IdeaPitched, IdeaPitchedAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(GDoc, GDocAdmin)
 admin.site.register(Tag, TagAdmin)
