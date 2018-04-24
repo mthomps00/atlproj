@@ -6,7 +6,7 @@ from django.utils.html import format_html
 
 # Register your models here.
 
-class IdeaPitchedInline(admin.TabularInline):
+class IdeaPitchedInline(admin.StackedInline):
     model = IdeaPitched
     readonly_fields = ('id', 'deliverables')
     autocomplete_fields = ['idea', 'pitch']
@@ -22,8 +22,7 @@ class StakeholderInline(admin.TabularInline):
     extra = 1
 
 class IdeaPitchedAdmin(admin.ModelAdmin):
-    search_fields = ['idea', 'pitch', 'notes']
-    autocomplete_fields = ['idea', 'pitch']
+    search_fields = ['idea__short_title', 'idea__editorial_title', 'idea__marketing_title', 'pitch__client__name', 'notes']
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -69,7 +68,7 @@ class PitchAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'date_updated')
     filter_horizontal = ('ideas',)
     search_fields = ['ideas__idea__short_title', 'ideas__idea__editorial_title', 'ideas__idea__marketing_title', 'client__name', 'notes']
-    autocomplete_fields = ['ideas',]
+    autocomplete_fields = ['ideas', 'client']
     inlines = [
         IdeaPitchedInline,
     ]
