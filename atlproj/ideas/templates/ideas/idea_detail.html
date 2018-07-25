@@ -36,7 +36,7 @@
 		<li class="nav-item">
 			<a class="nav-link" id="presentation-tab" data-toggle="tab" href="#presentation" role="tab" aria-controls="presentation" aria-selected="false">Presentation</a>
 		</li>
-		{% if idea.gdocs.all %}
+		{% if idea.links.all %}
 		<li class="nav-item">
 			<a class="nav-link" id="docs-tab" data-toggle="tab" href="#docs" role="tab" aria-controls="docs" aria-selected="false">Related URLs</a>
 		</li>
@@ -45,14 +45,14 @@
 	<div class="tab-content" id="myTabContent">
 		<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
 			<ul class="list-unstyled">
-			{% if idea.description %}<p class="lead">{{ idea.description }}</li>{% endif %}
+			{% if idea.description %}<p class="lead">{{ idea.description|linebreaksbr }}</li>{% endif %}
 			{% if idea.start_date %}
 				<li><strong>Timing:</strong> {{ idea.start_date|date:"M. j" }}
 				{% if idea.end_date and idea.start_date != idea.end_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %} 
 				{% if idea.length %}({{ idea.length }} weeks)</li>{% endif %}
 			{% endif %}
 			{% if idea.notes %}
-				<li><strong>Notes:</strong> {{ idea.notes }}</li>
+				<li><strong>Notes:</strong> {{ idea.notes|linebreaks }}</li>
 			{% endif %}
 			{% if idea.deliverables %}<li><strong>Deliverables: </strong> {{ idea.deliverables }}</li>{% endif %}
 			{% if idea.tags.all %}
@@ -103,10 +103,10 @@
 			</ul>
 		</div>
 		{% endif %}
-		{% if idea.gdocs.all %}
+		{% if idea.links.all %}
 		<div class="tab-pane fade" id="docs" role="tabpanel" aria-labelledby="docs-tab">
 			<ul class="list-unstyled">
-			{% for doc in idea.gdocs.all %}
+			{% for doc in idea.links.all %}
 				<il></il><a href="{{ doc.url }}">{{ doc.name }}</a>{% if doc.description %}: {{ doc.description }}{% endif %}<br /></li>
 			{% endfor %}
 			</ul>

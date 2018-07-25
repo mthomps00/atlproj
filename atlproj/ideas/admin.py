@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Idea, Client, Pitch, IdeaPitched, Platform, Profile, GDoc, Tag, Role
+from .models import Idea, Client, Pitch, IdeaPitched, Platform, Profile, Link, Tag, Role
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
@@ -31,14 +31,14 @@ class IdeaAdmin(admin.ModelAdmin):
         (None,  {'fields': ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'date_submitted']}),
         ('Scope', {'fields': ['deliverables', 'budget', 'lead_time', 'length']}),
         ('Status', {'fields': ['status', 'start_date', 'end_date']}),
-        ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'gdocs', 'tags']}),
+        ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'links', 'tags']}),
         ('Presentation', {'fields': ['design', 'preview_url', 'live_url', 'slug']}),
     ]
     list_display = ('admintitle', 'status', 'platform', 'start_date', 'end_date', 'date_updated')
     list_filter = ('status', 'platform', 'date_updated')
     list_editable = ('status', 'platform', 'start_date', 'end_date')
     raw_id_fields = ('parent',)
-    filter_horizontal = ('gdocs', 'tags')
+    filter_horizontal = ('links', 'tags')
     search_fields = ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'parent__short_title', 'parent__editorial_title', 'parent__marketing_title']
     inlines = [
         IdeaPitchedInline, StakeholderInline,
@@ -84,7 +84,7 @@ class UserAdmin(BaseUserAdmin):
         ProfileInline,
     ]
 
-class GDocAdmin(admin.ModelAdmin):
+class LinkAdmin(admin.ModelAdmin):
     list_display = ('name', 'url', 'description')
     list_editable = ('url', 'description')
     search_fields = ['name', 'description']
@@ -104,7 +104,7 @@ admin.site.register(Idea, IdeaAdmin)
 admin.site.register(Pitch, PitchAdmin)
 admin.site.register(IdeaPitched, IdeaPitchedAdmin)
 admin.site.register(Client, ClientAdmin)
-admin.site.register(GDoc, GDocAdmin)
+admin.site.register(Link, LinkAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Platform, PlatformAdmin)
 

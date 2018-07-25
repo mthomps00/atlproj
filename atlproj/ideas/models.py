@@ -29,7 +29,7 @@ class Platform(models.Model):
             
         return nickname
 
-class GDoc(models.Model):
+class Link(models.Model):
     name = models.CharField(max_length=255)
     url = models.URLField()
     description = models.TextField(blank=True)
@@ -87,22 +87,23 @@ class Idea(models.Model):
     marketing_title = models.CharField(max_length=255, blank=True)
     editorial_title = models.CharField(max_length=255, blank=True)
     subtitle = models.CharField(max_length=255, blank=True)
-    date_submitted = models.DateField('date submitted', default=date.today)
     short_title = models.CharField(max_length=255, unique_for_year='date_submitted')
-    date_updated = models.DateField('last updated', auto_now=True)
     description = models.TextField(blank=True)
+    status = models.CharField(max_length=15, choices=STATUSES, default='ON_OFFER')
+    
+    # TIMING INFORMATION
+    date_submitted = models.DateField('date submitted', default=date.today)
+    date_updated = models.DateField('last updated', auto_now=True)
+    length = models.PositiveSmallIntegerField(null=True, blank=True, help_text="How many weeks would this last?")
+    lead_time = models.PositiveSmallIntegerField(null=True, blank=True, help_text="How many weeks of advance notice does this require?")
+    start_date = models.DateField('start date', null=True, blank=True)
+    end_date = models.DateField('end date', null=True, blank=True)
+    expiration_date = models.DateField('expiration date', null=True, blank=True)
     
     # SCOPE: fields about the size of the project and its deliverables
     deliverables = models.CharField(max_length=255, blank=True)
-    length = models.PositiveSmallIntegerField(null=True, blank=True, help_text="How many weeks would this last?")
-    lead_time = models.PositiveSmallIntegerField(null=True, blank=True, help_text="How many weeks of advance notice does this require?")
     budget = models.PositiveIntegerField(null=True, blank=True)
 
-    # STATUS: fields about where the project stands
-    status = models.CharField(max_length=15, choices=STATUSES, default='ON_OFFER')
-    start_date = models.DateField('start date', null=True, blank=True)
-    end_date = models.DateField('end date', null=True, blank=True)
-    
     # PRESENTATION: fields about how/where the project will live publicly
     design = models.CharField(max_length=15, choices=DESIGNS, default='BASIC')
     preview_url = models.URLField(null=True, blank=True)
@@ -114,7 +115,7 @@ class Idea(models.Model):
     platform = models.ForeignKey(Platform, blank=True, null=True, on_delete=models.CASCADE)
     workday_title = models.CharField(max_length=255, blank=True)
     notes = models.TextField(blank=True)
-    gdocs = models.ManyToManyField(GDoc, related_name="ideas", related_query_name="idea", blank=True)
+    links = models.ManyToManyField(Link, related_name="ideas", related_query_name="idea", blank=True)
     tags = models.ManyToManyField(Tag, related_name="ideas", related_query_name="idea", blank=True)
     stakeholders = models.ManyToManyField(User, through='Role')
     
