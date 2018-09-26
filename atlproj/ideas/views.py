@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.utils.timezone import datetime
 from django.utils.http import is_safe_url
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -13,6 +14,7 @@ from django.views.generic.edit import UpdateView
 from ideas.models import Idea, Client, Pitch, Platform, Tag
 from ideas.forms import IdeaStatus
 from collections import OrderedDict
+from datetime import timedelta
 
 #################
 # REGULAR VIEWS #
@@ -52,6 +54,33 @@ def home(request):
         'active_ideas': active_ideas,
     }
     return render(request, 'ideas/home.html', context)
+
+def agenda(request):
+    today = datetime.today()
+    week = timedelta(days=7)
+    last_week = today-week
+    
+    newly_created = Idea.objects.filter(date_submitted__gte=last_week).order_by('-date_submitted')
+    newly_updated = Idea.objects.filter(date_updated__gte=last_week).order_by('-date_updated')
+    newly_pitched = Pitch.objects.filter(date_created__gte=last_week).order_by('-date_created')
+    live_after_end_date = Idea.objects.filter(status='LIVE').filter(end_date__lte=today)
+    not_live_after_start_date = Idea.objects.filter(status='SCHEDULED').filter(start_date__lte=today)
+    committed_with_start_date = Idea.objects.filter(status='COMMITTED').filter(start_date__isnull=False)
+    need_start_dates = Idea.objects.filter(status='COMMITTED').filter(start_date__isnull=True)
+    revisit = Idea.objects.filter( Q(status='ON_OFFER') | Q(status='TENTATIVE'), expiration_date__lte=today)
+    
+    context = {
+        'newly_created': newly_created,
+        'newly_pitched': newly_pitched,
+        'newly_updated': newly_updated,
+        'live_after_end_date': live_after_end_date,
+        'not_live_after_start_date': not_live_after_start_date,
+        'committed_with_start_date': committed_with_start_date,
+        'need_start_dates': need_start_dates,
+        'revisit': revisit,
+        'last_week': last_week,
+    }
+    return render(request, 'ideas/agenda.html', context)
 
 @login_required
 def UpdateStatus(request, pk):

@@ -1,0 +1,87 @@
+{% extends "ideas/index.html" %}
+
+{% load ideas_extras %}
+
+	{% block ideas-nav %} active{% endblock %}
+
+    {% block content %}
+        <h1>Weekly Projects Agenda</h1>
+        <h6>New since {{ last_week }}</h2>
+        {% if newly_created %}
+            <h3>What's been added</h3>
+            <ul>
+                {% for idea in newly_created %}
+                    <li>{{ idea }} <a href="{% url 'admin:ideas_idea_change' idea.pk %}" target="new">✎</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if newly_pitched %}
+            <h3>What's been pitched</h3>
+            <ul>
+                {% for pitch in newly_pitched %}
+                    <li>{{ pitch }} <a href="{% url 'admin:ideas_pitch_change' pitch.pk %}" target="new">✎</a>
+                    <ul>{% for idea in pitch.ideas.all %}
+                        <li>{{ idea }}</li>
+                    {% endfor %}</ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <h3>What needs updating</h3>
+        <ul>
+            {% if live_after_end_date %}
+                <li><strong>Still live?</strong>
+                    <ul>
+                        {% for item in live_after_end_date %}
+                        <li>{{ item }} <a href="{% url 'admin:ideas_idea_change' item.pk %}" target="new">✎</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if not_live_after_start_date %}
+                <li><strong>Live yet?</strong>
+                    <ul>
+                        {% for item in not_live_after_start_date %}
+                        <li>{{ item }} <a href="{% url 'admin:ideas_idea_change' item.pk %}" target="new">✎</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if committed_with_start_date %}
+                <li><strong>Change to committed and scheduled?</strong>
+                    <ul>
+                        {% for item in committed_with_start_date %}
+                        <li>{{ item }} <a href="{% url 'admin:ideas_idea_change' item.pk %}" target="new">✎</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if need_start_dates %}
+                <li><strong>Figured out the start date?</strong>
+                    <ul>
+                        {% for item in need_start_dates %}
+                        <li>{{ item }} <a href="{% url 'admin:ideas_idea_change' item.pk %}" target="new">✎</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+        {% if revisit %}
+            <h3>What needs revisiting</h3>
+            <ul>
+                {% for item in revisit %}
+                    <li>{{ item }} <a href="{% url 'admin:ideas_idea_change' item.pk %}" target="new">✎</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endblock %}
+    
+	{% block extendfooter %}
+    	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    	<script>
+    		$(document).ready( function () {
+    			$('#idea-table').DataTable();
+    		} );
+    	</script>
+	{% endblock %}

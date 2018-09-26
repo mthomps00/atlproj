@@ -7,6 +7,7 @@ from atlproj.urls import *
 urlpatterns = [
     url('', include('social_django.urls', namespace='social')),
     url(r'^$', views.index, name='index'),
+    url(r'^agenda$', views.agenda, name='agenda'),
     url(r'^list/', include([
         url(r'^$', views.ideas_by_status, name='all_ideas'),
         url(r'^(?P<selector>[\w]+)/$', views.ideas_by_status, name='ideas_by_status'),

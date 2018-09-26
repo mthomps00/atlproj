@@ -28,15 +28,15 @@ class IdeaPitchedAdmin(admin.ModelAdmin):
 
 class IdeaAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,  {'fields': ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'date_submitted']}),
+        (None,  {'fields': ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'date_submitted', 'status']}),
         ('Scope', {'fields': ['deliverables', 'budget', 'lead_time', 'length']}),
-        ('Status', {'fields': ['status', 'start_date', 'end_date']}),
+        ('Timing', {'fields': ['start_date', 'end_date', 'expiration_date']}),
         ('Meta', {'fields': ['parent', 'platform', 'workday_title', 'notes', 'links', 'tags']}),
         ('Presentation', {'fields': ['design', 'preview_url', 'live_url', 'slug']}),
     ]
-    list_display = ('admintitle', 'status', 'platform', 'start_date', 'end_date', 'date_updated')
+    list_display = ('admintitle', 'status', 'platform', 'start_date', 'expiration_date', 'date_updated')
     list_filter = ('status', 'platform', 'date_updated')
-    list_editable = ('status', 'platform', 'start_date', 'end_date')
+    list_editable = ('status', 'platform', 'start_date', 'expiration_date')
     raw_id_fields = ('parent',)
     filter_horizontal = ('links', 'tags')
     search_fields = ['short_title', 'editorial_title', 'marketing_title', 'subtitle', 'description', 'parent__short_title', 'parent__editorial_title', 'parent__marketing_title']
