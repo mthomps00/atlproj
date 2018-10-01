@@ -99,7 +99,7 @@ class Idea(models.Model):
     start_date = models.DateField('start date', null=True, blank=True)
     end_date = models.DateField('end date', null=True, blank=True)
     expiration_date = models.DateField('expiration date', null=True, blank=True)
-    
+
     # SCOPE: fields about the size of the project and its deliverables
     deliverables = models.CharField(max_length=255, blank=True)
     budget = models.PositiveIntegerField(null=True, blank=True)
@@ -118,6 +118,7 @@ class Idea(models.Model):
     links = models.ManyToManyField(Link, related_name="ideas", related_query_name="idea", blank=True)
     tags = models.ManyToManyField(Tag, related_name="ideas", related_query_name="idea", blank=True)
     stakeholders = models.ManyToManyField(User, through='Role')
+    creative_brief = models.URLField('creative brief URL', null=True, blank=True, help_text="This should be the URL of a Google Doc")
     
     def calculate_budget(self):
         
@@ -208,6 +209,56 @@ class Idea(models.Model):
         # Don't allow scheduled entries to exist without start dates.
         if self.status == 'SCHEDULED' and self.start_date is None:
             raise ValidationError(_('If the idea\'s already scheduled, please add the start date or change the status to "Committed, but not yet scheduled."'))
+
+class KeyDate(models.Model):
+    date = models.DateField()
+    short_desc = models.CharField(max_length=255)
+    long_desc = models.TextField(blank=True)
+    major = models.BooleanField(default=True)
+    confirmed = models.BooleanField(default=False)
+    
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return "%s: %s %s" % (self.date, self.short_desc)
+
+class StartDate(KeyDate):
+    idea = models.OneToOneField(Idea, related_name="new_start_date", related_query_name="new_start_date", on_delete=models.CASCADE)
+    short_desc = None
+
+    def __str__(self):
+        return "%s: Start of %s" % (self.date, self.idea)
+        
+    class Meta:
+        verbose_name_plural = "Start date"
+
+class EndDate(KeyDate):
+    idea = models.OneToOneField(Idea, related_name="new_end_date", related_query_name="new_end_date", on_delete=models.CASCADE)
+    short_desc = None
+
+    def __str__(self):
+        return "%s: End of %s" % (self.date, self.idea)
+
+    class Meta:
+        verbose_name_plural = "End date"
+   
+class IdeaDate(KeyDate):
+    idea = models.ForeignKey(Idea, related_name="key_date", related_query_name="key_dates", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "%s: %s %s" % (self.date, self.idea, self.short_desc)
+
+    class Meta:
+        verbose_name = "Key date"
+        verbose_name_plural = "Other key dates"
+   
+class Deliverable(models.Model):
+    short_desc = models.CharField(max_length=255)
+    idea = models.ForeignKey(Idea, related_name="key_deliverables", related_query_name="key_deliverable", on_delete=models.CASCADE)
+    long_desc = models.TextField(blank=True)
+    must_include = models.BooleanField(default=True)
+    committed = models.BooleanField(default=False)
 
 class Role(models.Model):
     ROLES = (

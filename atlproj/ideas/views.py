@@ -24,14 +24,14 @@ from datetime import timedelta
 def index(request):
     today = datetime.today()
     ideas_list = Idea.objects.filter(status='ON_OFFER').order_by('-date_updated').filter(parent__isnull=True)[:10]
-    active_ideas = Idea.objects.filter(status='LIVE').filter(start_date__lte=today).exclude(end_date__lte=today).order_by('-start_date')[:10]
-    need_start_dates = Idea.objects.filter(status='COMMITTED').filter(start_date__isnull=True)
-    calendar = Idea.objects.filter(start_date__gte=today).order_by('start_date').exclude(status='ARCHIVED').exclude(status='DRAFT')
+    active_ideas = Idea.objects.filter(status='LIVE').filter(new_start_date__date__lte=today).exclude(end_date__lte=today).order_by('-start_date')[:10]
+    need_start_dates = Idea.objects.filter(status='COMMITTED').filter(new_start_date__date__isnull=True)
+    calendar = Idea.objects.filter(new_start_date__date__gte=today).order_by('start_date').exclude(status='ARCHIVED').exclude(status='DRAFT')
     
     # These three QuerySets are to combine a few types of ideas that need to be updated
-    live_after_end_date = Idea.objects.filter(status='LIVE').filter(end_date__lte=today)
-    not_live_after_start_date = Idea.objects.filter(status='SCHEDULED').filter(start_date__lte=today)
-    committed_with_start_date = Idea.objects.filter(status='COMMITTED').filter(start_date__isnull=False)
+    live_after_end_date = Idea.objects.filter(status='LIVE').filter(new_end_date__date__lte=today)
+    not_live_after_start_date = Idea.objects.filter(status='SCHEDULED').filter(new_start_date__date__lte=today)
+    committed_with_start_date = Idea.objects.filter(status='COMMITTED').filter(new_start_date__date__isnull=False)
     need_updates = live_after_end_date | not_live_after_start_date | committed_with_start_date
 
     platforms = Platform.objects.all()
