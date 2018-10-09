@@ -46,11 +46,24 @@
 		<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
 			<ul class="list-unstyled">
 			{% if idea.description %}<p class="lead">{{ idea.description|linebreaksbr }}</li>{% endif %}
-			{% if idea.start_date %}
-				<li><strong>Timing:</strong> {{ idea.start_date|date:"M. j" }}
-				{% if idea.end_date and idea.start_date != idea.end_date %}-{{ idea.end_date|date:"M. j, Y" }}{% else %}{{ idea.start_date|date:", Y" }}{% endif %} 
+			{% if idea.new_start_date %}
+				<li><strong>{{ idea.new_start_date.date|date:"M. j, Y" }}</strong> - Project start date
+				{% if idea.new_start_date.long_desc %}<ul><li>{{ idea.new_start_date.long_desc }}</li></ul>{% endif %}
+				</li>
 				{% if idea.length %}({{ idea.length }} weeks)</li>{% endif %}
 			{% endif %}
+			{% for event in idea.key_date.all %}
+				<li><strong>{{ event.date|date:"M. j, Y" }}</strong> - {{ event.short_desc }} 
+				{% if event.long_desc %}
+					<ul><li>{{ event.long_desc }}</li></ul>
+				{% endif %}
+				</li>
+			{% endfor %}
+			{% if idea.new_end_date and idea.new_start_date != idea.new_end_date %}
+				<li><strong>{{ idea.new_end_date.date|date:"M. j, Y" }}</strong> - Project end date
+				{% if idea.new_end_date.long_desc %}<ul><li>{{ idea.new_end_date.long_desc }}</li></ul>{% endif %}
+				</li>
+			{% endif %} 
 			{% if idea.notes %}
 				<li><strong>Notes:</strong> {{ idea.notes|linebreaks }}</li>
 			{% endif %}
@@ -90,6 +103,7 @@
 				<li><strong>Updated:</strong> {{ idea.date_updated|date:"M. j, Y" }}</li>
 				<li><strong>Added to database:</strong> {{ idea.date_submitted|date:"M. j, Y" }}</li>
 				<li><strong>Draft title:</strong> {{ idea.short_title }}</li>
+				{% if idea.creative_brief %}<li><a href="{{ idea.creative_brief }}"><strong>Creative brief</strong></a></li>{% endif %}
 				{% if idea.lead_time %}<li><strong>Lead time sought:</strong> {{ idea.lead_time }} weeks</li>{% endif %}
 				{% if idea.workday_title %}<li><strong>Workday code:</strong> {{ idea.workday_title }}</li>{% endif %}
 			</ul>
