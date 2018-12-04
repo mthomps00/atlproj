@@ -205,10 +205,18 @@ class Idea(models.Model):
         from django.urls import reverse
         return reverse('idea_detail', args=[str(self.pk)])
         
-    def clean(self):
-        # Don't allow scheduled entries to exist without start dates.
-        if self.status == 'SCHEDULED' and self.start_date is None:
-            raise ValidationError(_('If the idea\'s already scheduled, please add the start date or change the status to "Committed, but not yet scheduled."'))
+    # def has_start_date(self):
+    #    has_start_date = False
+    #    try:
+    #        has_start_date = (self.new_start_date is not None)
+    #    except StartDate.DoesNotExist:
+    #        pass
+    #    return has_start_date
+    
+    # def clean(self):
+    #    # Don't allow scheduled entries to exist without start dates.
+    #    if self.status == 'SCHEDULED' and not self.has_start_date():
+    #        raise ValidationError(_('If the idea\'s already scheduled, please add the start date or change the status to "Committed, but not yet scheduled."'))
 
 class KeyDate(models.Model):
     date = models.DateField()
